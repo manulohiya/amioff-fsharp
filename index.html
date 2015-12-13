@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+
 <head>
 	<meta charset="utf-8">
 
@@ -9,11 +10,19 @@
 	<!-- Bootstrap CDN -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-	
+	<!-- Date/Time Picker -->
+	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen"
+     href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
 
 	
+     <!-- Datetimepicker CSS -->
+      <link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker-standalone.css">
+
+     <!-- Datetimepicker CSS2 -->
+      <link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker.css">
+ 
 	<!-- link to stylesheet (always require after Bootstrap) -->
-
 	<link rel="stylesheet" type="text/css" href="styles.css">
 
 
@@ -42,8 +51,72 @@
 </head>
 <body>
 
-	<h1> Hello </h1>
+<div class="jumbotron">
+  <div class="container">
+    <center>
+    <h1>Amioff<h1>
+    <h3><em>The easiest way for medical residents to find fellow residents to hang out with</em></h3>
+    </center>
+    <img src='https://images.unsplash.com/photo-1415394171664-b29caa4dca77?crop=entropy&fit=crop&fm=jpg&h=800&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1425'>
+  </div>
+</div>
 
+<div class="container">
+  	<div class="row">		
+    	<div class="col-sm-12">
+        	<center>
+
+
+<form class="form-inline">
+  <div class="form-group">
+    <label for="programName">Program login</label>
+    <input type="text" class="form-control" id="programName" placeholder="e.g. UCSFEM">
+  </div>
+  
+  <button type="submit" class="btn btn-success">Go</button>
+</form>
+
+				<h1> Program: {{USCFEM}} </h1>
+			</center>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+  <div class="row">		
+    <div class="col-sm-6">
+        <center>
+			<h2> Pick a time </h2>
+			
+			<div class="well">
+  <div id="datetimepicker" class="input-group">
+    <input data-format="MM/dd/yyyy HH:mm PP" type="text"></input>
+    <span class="add-on">
+      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+      </i>
+    </span>
+  </div>
+</div>
+    
+
+  
+
+
+
+		</center>
+	</div>
+	
+	<div class="col-sm-6">
+        <center>
+			<h2> Here's who is free at {{Time}}</h2>
+			<li> Delphine Huang - doesn't have to work until Wed, Dec 15 3PM</li>
+			<li> Delphine Huang - doesn't have to work until Wed, Dec 15 3PM</li>
+			<li> Delphine Huang - doesn't have to work until Wed, Dec 15 3PM</li>
+			<li> Delphine Huang - doesn't have to work until Wed, Dec 15 3PM</li>
+		</center>
+	</div>		
+  </div>
+</div>
 
 
 
@@ -55,11 +128,32 @@
 
 		<!-- link to javascript file -->
 
-		<script src="app.js"></script> 
+		<script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js">
+    </script> 
 
+    
+
+    <script type="text/javascript"
+     src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js">
+    </script>
+    
+    <script type="text/javascript"
+     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+    </script>
+
+     <script type="text/javascript"
+     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+    </script>
+
+    <script src="app.js"></script> 
+
+ 	
+
+		
 
 
 	</body>
-	</html>
+</html>
 
 

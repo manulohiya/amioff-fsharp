@@ -1,0 +1,36 @@
+.jumbotron {
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+}
+
+.jumbotron h1, h3 {
+  position: relative;
+  z-index: 2;
+  color: #000;
+  font-family: helvetica;
+ 
+
+}
+
+.jumbotron h1  {
+  
+  font-weight: bold;
+
+}
+
+.jumbotron img {
+  position: absolute;
+  background-size: cover;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 400px;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  
+    vertical-align: top;
+}
