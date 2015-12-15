@@ -67,16 +67,16 @@
         	<center>
 
 
-<form class="form-inline">
+<form class = "form-inline" id="program-search">
   <div class="form-group">
     <label for="programName">Program login</label>
-    <input type="text" class="form-control" id="programName" placeholder="e.g. UCSFEM">
+    <input class="form-control" id="program-name" placeholder="e.g. UCSFEM" autofocus>
   </div>
   
   <button type="submit" class="btn btn-success">Go</button>
 </form>
 
-				<h1> Program: {{USCFEM}} </h1>
+				
 			</center>
 		</div>
 	</div>
@@ -89,11 +89,13 @@
 			<h2> Pick a time </h2>
 			
 			<div class="well">
-  <div id="datetimepicker" class="input-group">
-    <input data-format="MM/dd/yyyy HH:mm PP" type="text"></input>
+<div id = "date-form" class = "form-group">			
+  <div id="datetimepicker" class="input date">
+    <input class = "form-inline" type="text">
     <span class="add-on">
       <i data-time-icon="icon-time" data-date-icon="icon-calendar">
       </i>
+      
     </span>
   </div>
 </div>
@@ -133,11 +135,15 @@
      src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js">
     </script> 
 
-    
+   	 <script type="text/javascript"
+     src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js">
+     </script> 
 
     <script type="text/javascript"
      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js">
     </script>
+
+
     
     <script type="text/javascript"
      src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
