@@ -1,0 +1,23 @@
+type project
+owners
+    Neil Maheshwari and Manu Lohiya
+authors 
+    Neil Maheshwari and Manu Lohiya
+projectUrl
+    http://github.com/neilmaheshwari/AmIOff.HttpApi
+iconUrl
+    https://raw.githubusercontent.com/neilmaheshwari/AmIOff.HttpApi/master/docs/files/img/logo.png
+licenseUrl
+    http://github.com/neilmaheshwari/AmIOff.HttpApi/blob/master/LICENSE.txt
+requireLicenseAcceptance
+    false
+copyright
+    Copyright 2015
+tags
+    amion fsharp
+summary
+    Http api for medical residents to find fellow residents to hang out with.
+description
+    N/A
+
+
