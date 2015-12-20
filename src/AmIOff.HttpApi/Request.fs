@@ -193,7 +193,9 @@ module Timesheet =
             let name = row.``Staff name``
             let residentId = row.``Staff name - unique ID``
             (name, residentId) ]
-        |> List.distinctBy snd
+        |> List.toSeq
+        |> Seq.distinctBy snd
+        |> List.ofSeq
         |> List.choose ((<||) Resident.tryCreate)
 
     let internal mapToHour n = 
