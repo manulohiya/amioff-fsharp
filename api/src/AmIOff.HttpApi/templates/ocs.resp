@@ -1,0 +1,46 @@
+Assignments for 12-10-15     (as of Dec 10 0:29 2015 eastern time)
+
+Field  1 - 3: Staff name, unique ID, backup ID
+Field  4 - 6: Assignment name (in quotes), unique ID, backup ID
+Field  7 - 8: Date and time of assignment (GMTO=-8 1)
+
+"UCSF Clerk",3257,710,"UCSF-EM CLERK",122,95,12-10-15,0700,1500
+"Wood, William",163,39,"UCSF-EM 7a-3p (Blue)",184,96,12-10-15,0700,1500
+"Pettersen, Kenneth (IM)",3467,268,"UCSF-EM 7a-3p (Blue)",430,97,12-10-15,0700,1500
+"Flores, Stefan (HGH PGY3)",2812,94,"UCSF-EM 7a-3p (Blue)",436,98,12-10-15,0700,1500
+"Martin, David (PGY2)",3343,508,"UCSF-EM 7a-3p (Gold)",142,101,12-10-15,0700,1500
+"Petti, Lorraine",162,38,"UCSF-EM 8a-6p (Blue)",1362,106,12-10-15,0800,1600
+"Bieraugel, Karen (IM)",3466,338,"UCSF-EM 10a-6p (Gold)",393,109,12-10-15,1000,1800
+"Weiant, Tim",3317,428,"UCSF-EM 12p-8p (PIT)",2701,117,12-10-15,1300,2100
+"Sooriyakumaran, Prathap",1949,3,"UCSF-EM 1p-9p (Float)",2922,119,12-10-15,1300,2100
+"Starr, Jessica",3321,1079,"UCSF-EM 3p-11p (Blue)",144,122,12-10-15,1500,2300
+"Chang, Julia",2529,922,"UCSF-EM 3p-11p (Blue)",426,123,12-10-15,1500,2300
+"Yu, Louis",2971,1122,"UCSF-EM 3p-11p (Blue)",429,124,12-10-15,1500,2300
+"Rose, Christian",2052,588,"UCSF-EM 3p-11p (Gold)",2235,129,12-10-15,1500,2300
+"Murphy, Charley",2492,803,"UCSF-EM 3p-11p (Gold)",187,130,12-10-15,1500,2300
+"Tcheng, Scott",2108,638,"UCSF-EM 11p-7a (Blue)",146,143,12-10-15,2300,0700
+"Chang, Brian",2486,912,"UCSF-EM 11p-7a (Blue)",427,144,12-10-15,2300,0700
+"Cobb, Tiffany",2994,575,"UCSF-EM 11p-7a (Blue)",881,145,12-10-15,2300,0700
+"SFGH Clerk",3260,684,"SFGH-EM Clerk",1063,212,12-10-15,0700,1500
+"Rienas, Christopher (Psych)",3423,1221,"SFGH-EM 7a-3p (Zone 1)",1064,215,12-10-15,0700,1500
+"Sozmen, Elif (Neuro)",3424,1155,"SFGH-EM 7a-3p (Zone 1)",1513,216,12-10-15,0700,1500
+"Nawas, Miriam (IM)",3169,615,"SFGH-EM 7a-3p (Zone 1)",1065,217,12-10-15,0700,1500
+"Shalen, Evan (IM)",2823,192,"SFGH-EM 7a-3p (Zone 1)",1066,218,12-10-15,0700,1500
+"Valenzuela, Josie",2499,708,"SFGH-EM 1p-9p (Zone 1)",3058,255,12-10-15,1300,2100
+"Graglia, Sally",1944,8,"SFGH-EM 3p-11p (Zone 1) SR RESIDENT",1903,258,12-10-15,1500,2300
+"Daniel, Rosny",2786,29,"SFGH-EM 3p-11p (Zone 1)",1071,259,12-10-15,1500,2300
+"Wang, Jennifer",3409,1207,"SFGH-EM 3p-11p (Zone 1)",1072,260,12-10-15,1500,2300
+"Miller, Samuel (IM)",2977,1127,"SFGH-EM 6p-2a (Zone 1)",1079,275,12-10-15,1800,0200
+"Schegg, Tiffany",1640,391,"SFGH-EM 11p-7a  (Zone 1) SR RESIDENT",1904,293,12-10-15,2300,0700
+"Fuller, Gretchen ",2787,28,"SFGH-EM 11p-7a  (Zone 1)",1082,294,12-10-15,2300,0700
+"Aubin-Pouliot, Annick (Surg)",3416,1214,"SFGH-EM 11p-7a  (Zone 1)",1083,295,12-10-15,2300,0700
+"Bizimungu, Remy",3248,752,"SFGH-EM 11p-7a  (Zone 4)",1086,300,12-10-15,2300,0700
+"Graglia, Sally",1944,8,"Chief",1168,309,12-10-15,0000,0000
+"Sudario, Gabe",2351,852,"Jeopardy",1164,311,12-10-15,0000,0000
+"Barker, Allison",2098,628,"Jeopardy",1165,312,12-10-15,0000,0000
+"Knott, Peter",160,36,"CDU 7a-7p ",2432,323,12-10-15,0700,1900
+"Tran, Le",3318,378,"CDU 7p-7a",2301,324,12-10-15,1900,0700
+"Peds Mission Bay Clerk ",3259,685,"Peds EM (Mission Bay) Clerk ",3118,343,12-10-15,0700,1700
+"Links, Beth (Peds)",3130,1177,"Peds EM 7:30a-5p (Mission Bay)",3095,345,12-10-15,0730,1700
+"Tsen, Diana (Peds)",3471,155,"Peds EM 2p-11p (Mission Bay)",3104,358,12-10-15,1400,2300
+"Montoy, Juan Carlos",1634,385,"Peds EM 5p-2a (Mission Bay)",3106,362,12-10-15,1700,0200
