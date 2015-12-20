@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BBB9DDAF-E9ED-407E-8196-453D05EF7775}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>AmIOff.HttpApi</RootNamespace>
     <AssemblyName>AmIOff.HttpApi</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -44,7 +44,7 @@
     <Compile Include="Request.fs" />
     <Compile Include="WebService.fs" />
     <None Include="Script.fsx" />
-    <None Include="app.fsx" />
+    <Compile Include="Program.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <None Include="templates\ocs.csv" />
