@@ -1,1 +1,1 @@
-mono src/AmIOff.HttpApi/bin/Debug/AmIOff.HttpApi.exe
+web: mono src/AmIOff.HttpApi/bin/Debug/AmIOff.HttpApi.exe
