@@ -24,6 +24,15 @@ type Request =
 
 type Timesheet = FSharp.Data.CsvProvider<"templates/ocs.csv">
 
+type ScheduleItem = FSharp.Data.CsvProvider<"templates/ocs.csv">.Row
+
+type Resident = 
+    {
+        first : string
+        last : string
+        id : int
+    }
+
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Month = 
@@ -128,6 +137,27 @@ module Request =
                 printfn "Requesting data from: %s" http.Address.OriginalString
                 http
         Http.AsyncRequestString(baseUrl, query = query, httpMethod = "GET", customizeHttpRequest = logging)
+
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Resident = 
+
+    let tryCreate (name : string) id =
+        try
+            let names = name.Split ','
+            {
+
+                first = names.[1]
+                last = names.[0]
+                id = id
+            } 
+            |> Some
+        with
+            | exn -> 
+                printfn "Could not build resident from (name : %A, id :%A)"
+                        name 
+                        id
+                None
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
