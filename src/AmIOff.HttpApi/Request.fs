@@ -178,7 +178,7 @@ module Timesheet =
         let csvHeader = "\"Staff name\",\"Staff name - unique ID\",\"Staff name - backup ID\",\"Assignment name (in quotes)\",\"Assignment name (in quotes) - unique ID\",\"Assignment name (in quotes) - backup ID\",\"Date of assignment (GMTO=-8 1)\",\"Time of assignment (GMTO=-8 1) Start\",\"Time of assignment (GMTO=-8 1) End\""
         try 
             rawAmionResp.Split '\n'
-            |> Array.skip 5
+            |> fun x -> x.[5..]
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
             |> Timesheet.Parse
@@ -193,7 +193,9 @@ module Timesheet =
             let name = row.``Staff name``
             let residentId = row.``Staff name - unique ID``
             (name, residentId) ]
-        |> List.distinctBy snd
+        |> List.toSeq
+        |> Seq.distinctBy snd
+        |> List.ofSeq
         |> List.choose ((<||) Resident.tryCreate)
 
     let internal mapToHour n = 
