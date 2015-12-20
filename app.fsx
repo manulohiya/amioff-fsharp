@@ -8,8 +8,6 @@
 #I @"api/packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
 
-#I "api/src/AmIOff.HttpApi"
-
 #I "api/src/AmIOff.HttpApi/bin/Debug"
 #r "AmIOff.HttpApi.dll"
 
