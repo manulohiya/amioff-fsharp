@@ -148,14 +148,14 @@ module Resident =
             last : string
         }
 
-    let tryCreate (name : string) id =
+    let tryCreate (name : string) id : Resident option=
         try
             let names = name.Split ','
             {
 
-                first = names.[1].Trim()
-                last = names.[0].Trim()
-                id = id
+                Resident.first = names.[1].Trim()
+                Resident.last = names.[0].Trim()
+                Resident.id = id
             } 
             |> Some
         with
