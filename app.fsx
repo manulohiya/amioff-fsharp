@@ -2,13 +2,13 @@
 // Start the 'app' WebPart defined in 'app.fsx' on Heroku using %PORT%
 // --------------------------------------------------------------------------------------
 
-#I "../../api/packages/Suave/lib/net40"
+#I "packages/Suave/lib/net40"
 #r "Suave.dll"
 
-#I @"../../api/packages/FSharp.Data/lib/net40/"
+#I @"packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
 
-#I "../../api/src/AmIOff.HttpApi/bin/Debug"
+#I "src/AmIOff.HttpApi/bin/Release"
 #r "AmIOff.HttpApi.dll"
 
 open AmIOff.HttpApi
