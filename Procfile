@@ -1,1 +1,1 @@
-web: ./deploy.sh
+web: sh ./deploy.sh
