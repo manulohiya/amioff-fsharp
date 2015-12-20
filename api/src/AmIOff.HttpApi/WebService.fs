@@ -7,7 +7,7 @@ open Suave.Http.Successful
 open Suave.Web
 open Suave.Json
 open Suave.Types
-
+open Suave.Http.Files
 module Service = 
 
     let private ofUnixTime (unix : int) = 
@@ -32,12 +32,32 @@ module Service =
                             |> List.map Resident.toJson
                             |> String.concat ","
                         sprintf "[%s]" joined
+
+                    printfn "Returning JSON: %s" freeResidentsAsJSON
                     return! OK freeResidentsAsJSON x
                 | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
         }                
 
-    let residentsApp =
+    let stylesAndScripts = 
+        [ for file in System.IO.Directory.EnumerateFiles ("content") ->
+            printfn "File: %A" file
+            path ("/" + file) >>= Suave.Http.Files.file file
+        ]
+
+    let routes = 
         let returnJson = Writers.setMimeType "application/json; charset=utf-8"
-        GET >>= choose [
+        [
+          //for f in stylesAndScripts -> f
           pathScan "/api/%s/%d" findFreeResidentsAsJson >>= returnJson
-          RequestErrors.NOT_FOUND "Found no handlers" ]
+          path "/" >>= Suave.Http.Files.file "content/index.html"
+          RequestErrors.NOT_FOUND "Found no handlers" 
+        ]
+
+    let getRoutes = stylesAndScripts @ routes
+
+    let residentsApp =
+        let homePath = __SOURCE_DIRECTORY__ + "/content/"
+        let fullPath = Suave.Http.Files.resolvePath homePath "index.html"
+        printfn "FullPath :%s" fullPath 
+        printfn "HomePath : %s" homePath 
+        GET >>= choose getRoutes 
