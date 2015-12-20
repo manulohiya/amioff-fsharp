@@ -2,6 +2,7 @@
 
 open FSharp.Data
 open System.Net
+open Newtonsoft.Json
 
 type Month = 
     January | February | March | April 
@@ -142,13 +143,19 @@ module Request =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Resident = 
 
+    type private JsonResident = 
+        {
+            first : string
+            last : string
+        }
+
     let tryCreate (name : string) id =
         try
             let names = name.Split ','
             {
 
-                first = names.[1]
-                last = names.[0]
+                first = names.[1].Trim()
+                last = names.[0].Trim()
                 id = id
             } 
             |> Some
@@ -158,6 +165,11 @@ module Resident =
                         name 
                         id
                 None
+
+    let toJson (resident : Resident) = 
+        let first = resident.first
+        let last = resident.last
+        sprintf "{firstName:\"%s\",lastName:\"%s\"}" first last
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

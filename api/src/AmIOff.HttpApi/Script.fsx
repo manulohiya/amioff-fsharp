@@ -5,11 +5,16 @@ printfn "OK"
 
 #I @"../../packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
+
+#I @"../../packages/Newtonsoft.Json/lib/net40"
+#r "Newtonsoft.Json"
+
 #load "Request.fs"
 
 open FSharp.Data
 open System.Net
 open System
+open Newtonsoft.Json
 open AmIOff.HttpApi
 
 let amionResponse = 
@@ -45,5 +50,5 @@ let freeResidents =
     Timesheet.freeResidents residents now amionResponse;;
 
 freeResidents
-|> List.iter (fun resident -> 
-    printfn "%s %s is free!" resident.first resident.last)
+|> List.map Resident.toJson
+|> List.iter (printfn "Free People: %s")
