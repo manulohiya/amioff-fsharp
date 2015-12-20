@@ -1,6 +1,6 @@
 $(function(){
 
-  console.log("JS is ready!")
+	console.log("JS is ready!")
 
 
 // results template
@@ -16,51 +16,51 @@ var _results = _.template($('#results-template').html());
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
 	event.preventDefault();
-	$results.empty();
+	
 	var $programName = $('#program-name').val();
 	var $date = $('#date').val();
+	var unixtime = Date.parse($date).getTime()/1000
 	console.log("Program Name: "+$programName)
 	console.log("Date: "+$date)
+	console.log("Unix: "+unixtime)
 	
-	// $.get('url+$programName+ $date',
-	   var names = [
-  {firstName: "Manu", lastName: "Lohiya"},
-  {firstName: "Neil", lastName: "Maheshwari"}
+	
+ // $.get('/api/+$programName/+unixtime',
+  	// function(names) {
+  		
+  		$results.empty();
+  		
 
-];
-	   // var names = 
-	   // {
-    //     firstName: "Manu",
-    //     lastName: "Lohiya"
-    // 	};
+  		var names = [
+  		{firstName: "Manu", lastName: "Lohiya"},
+  		{firstName: "Neil", lastName: "Maheshwari"}
 
-    // 	var name2 = 	
-    // 	{
-    // 	firstName: "Neil",
-    //     lastName: "Maheshwari"
-    // 	};
-    
-    // 	var data = [name1,name2];
-    	console.log(names)	
-		
-    	_.each(names, function (name, index) {
-  		var $name = $(_results(name));
-  		$name.attr('data-index', index);
-  		$results.append($name);
-		});
+  		];
+  		
+  		console.log(names)	
+  		
+  		_.each(names, function (name, index) {
+  			var $name = $(_results(name));
+  			$name.attr('data-index', index);
+  			$results.append($name);
+  		});
 
-		
+	// }	
 });
+
+
 
 
 
 
 $('#datetimepicker').datetimepicker({
-    format: 'MM/dd/yyyy hh:mm',
-    language: 'en',
-    pickSeconds: false, 
-    pick12HourFormat: true
+	format: 'MM/dd/yyyy hh:mm',
+	language: 'en',
+	pickSeconds: false, 
+	pick12HourFormat: true
 });
+
+
 
 });
 
