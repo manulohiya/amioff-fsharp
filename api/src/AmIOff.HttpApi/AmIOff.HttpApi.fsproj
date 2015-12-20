@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Request.fs" />
+    <Compile Include="WebService.fs" />
     <None Include="Script.fsx" />
+    <None Include="app.fsx" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <None Include="templates\ocs.csv" />
