@@ -2,7 +2,6 @@
 
 open FSharp.Data
 open System.Net
-open Newtonsoft.Json
 
 type Month = 
     January | February | March | April 
