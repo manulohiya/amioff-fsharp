@@ -176,3 +176,63 @@ module Timesheet =
             exn -> 
                 printfn "Could not map amion string to csv with error: %s" exn.Message
                 None
+
+    let toResidents (timesheet : Timesheet) = 
+        [ for row in timesheet.Rows -> 
+            let name = row.``Staff name``
+            let residentId = row.``Staff name - unique ID``
+            (name, residentId) ]
+        |> List.distinctBy snd
+        |> List.choose ((<||) Resident.tryCreate)
+
+    let internal mapToHour n = 
+        let hour = n / 100
+        let minute = n % 100
+        if minute < 0 || minute >= 60 then 
+            printfn "Could not create (minute, hour) from %d" n
+            None
+        else
+            Some (hour, minute)
+
+    let internal addToDateTime (date : System.DateTime) (hour, minute) = 
+        date
+            .AddHours(float hour)
+            .AddMinutes(float minute)
+    
+    let private maybeTime f (scheduleItem : ScheduleItem) = 
+        let assignmentDate = scheduleItem.``Date of assignment (GMTO=-8 1)``
+        scheduleItem
+        |> f
+        |> mapToHour 
+        |> Option.map (addToDateTime assignmentDate)
+
+    let internal maybeStartTime = 
+        maybeTime (fun scheduleItem -> 
+            scheduleItem.``Time of assignment (GMTO=-8 1) Start``)
+
+    let internal maybeEndTime startTime = 
+        maybeTime (fun scheduleItem ->
+            scheduleItem.``Time of assignment (GMTO=-8 1) End``)
+        >> Option.map (fun endTime -> 
+            if startTime > endTime then
+                endTime.AddDays(1.)
+            else endTime)
+
+    let residentIsBusy (resident : Resident) (time : System.DateTime) (timesheet : Timesheet) = 
+        timesheet.Rows 
+        |> Seq.filter (fun scheduleItem -> scheduleItem.``Staff name - unique ID`` = resident.id)
+        |> Seq.exists (fun scheduleItem ->
+            scheduleItem 
+            |> maybeStartTime
+            |> Option.exists (fun startTime -> 
+                let isAfterStart = startTime <= time
+                let isBeforeEnd = 
+                    scheduleItem
+                    |> maybeEndTime startTime
+                    |> Option.exists ((<=) time)
+                isAfterStart && isBeforeEnd))
+
+    let freeResidents residents time timesheet = 
+        residents
+        |> List.filter (fun (resident : Resident) -> 
+            not (residentIsBusy resident time timesheet))
