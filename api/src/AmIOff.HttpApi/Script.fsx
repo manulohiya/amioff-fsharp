@@ -3,22 +3,52 @@
 
 printfn "OK"
 
-#load "Request.fs"
 #I @"../../packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
+
+#I @"../../packages/Newtonsoft.Json/lib/net40"
+#r "Newtonsoft.Json"
+
+#load "Request.fs"
 
 open FSharp.Data
 open System.Net
 open System
+open Newtonsoft.Json
 open AmIOff.HttpApi
 
-let aminoResponse = 
+let amionResponse = 
     Request.tryCreate December 2015 "UCSFEM"
     |> Option.map (Async.RunSynchronously << Request.fetchRaw)
     |> Option.bind Timesheet.tryMapAmionResponseToCsv
+    |> Option.get 
 
-aminoResponse
-|> Option.iter (fun aminoResponse -> 
-    for row in aminoResponse.Rows do printfn "%A" row.``Assignment name (in quotes)``
+// "Shalen, Evan (IM)",2823,192,"SFGH-EM 6p-2a (Zone 1)",1079,275,12-19-15,1800,0200
 
-)
+
+let resident = 
+    {
+        first = "Evan"
+        last = "Shalen"
+        id = 2823
+    }
+
+let dateTime = System.DateTime(2015, 12, 19, 21, 00, 00)
+let dateTime' = System.DateTime(2015, 12, 20, 03, 00, 00) 
+
+Timesheet.residentIsBusy resident dateTime amionResponse
+|> printfn "Resident should be busy %A" 
+
+Timesheet.residentIsBusy resident dateTime' amionResponse
+|> not
+|> printfn "Resident should not be busy: %A"
+
+let residents = Timesheet.toResidents amionResponse;;
+
+let freeResidents = 
+    let now = System.DateTime.Now.AddHours(10.)
+    Timesheet.freeResidents residents now amionResponse;;
+
+freeResidents
+|> List.map Resident.toJson
+|> List.iter (printfn "Free People: %s")
