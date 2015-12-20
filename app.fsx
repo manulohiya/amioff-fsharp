@@ -2,14 +2,16 @@
 // Start the 'app' WebPart defined in 'app.fsx' on Heroku using %PORT%
 // --------------------------------------------------------------------------------------
 
-#I "../../packages/Suave/lib/net40"
+#I "api/packages/Suave/lib/net40"
 #r "Suave.dll"
-#I @"../../packages/FSharp.Data/lib/net40/"
+
+#I @"api/packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
 
-#load "Request.fs"
-#load "WebService.fs"
-//#load "app.fsx"
+#I "api/src/AmIOff.HttpApi"
+
+#I "api/src/AmIOff.HttpApi/bin/Debug"
+#r "AmIOff.HttpApi.dll"
 
 open AmIOff.HttpApi
 open System
@@ -23,17 +25,10 @@ open Suave.Types
 
 let serverConfig =
   let port = 
-    try 
-        int (Environment.GetEnvironmentVariable("PORT"))
-    with
-        | exn ->
-            printfn "Could not get port from environment. Starting on 8080"
-            8080
+    int (Environment.GetEnvironmentVariable("PORT"))
   { Web.defaultConfig with
       homeFolder = Some __SOURCE_DIRECTORY__
       logger = Logging.Loggers.saneDefaultsFor Logging.LogLevel.Warn
       bindings = [ Types.HttpBinding.mk' Types.HTTP "0.0.0.0" port ] }
 
 Web.startWebServer serverConfig Service.residentsApp
-
-System.Console.ReadLine () |> ignore
