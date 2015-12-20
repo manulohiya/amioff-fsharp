@@ -32,6 +32,8 @@ module Service =
                             |> List.map Resident.toJson
                             |> String.concat ","
                         sprintf "[%s]" joined
+
+                    printfn "Returning JSON: %s" freeResidentsAsJSON
                     return! OK freeResidentsAsJSON x
                 | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
         }                

@@ -168,7 +168,7 @@ module Resident =
     let toJson (resident : Resident) = 
         let first = resident.first
         let last = resident.last
-        sprintf "{firstName:\"%s\",lastName:\"%s\"}" first last
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -247,3 +247,4 @@ module Timesheet =
         residents
         |> List.filter (fun (resident : Resident) -> 
             not (residentIsBusy resident time timesheet))
+        |> List.sortBy (fun resident -> resident.first)
