@@ -14,11 +14,14 @@ let main args =
     printfn "Arguments passed to function : %A" args
     // Return 0. This indicates success.
 
-    let serverConfig =
+    let serverConfig = 
       let port = 
-        int (Environment.GetEnvironmentVariable("PORT"))
+        try
+            int (Environment.GetEnvironmentVariable("PORT"))
+        with
+            | exn -> 3000
       { Web.defaultConfig with
-          homeFolder = Some __SOURCE_DIRECTORY__
+          homeFolder = Some __SOURCE_DIRECTORY__ 
           logger = Logging.Loggers.saneDefaultsFor Logging.LogLevel.Warn
           bindings = [ Types.HttpBinding.mk' Types.HTTP "0.0.0.0" port ] }
 
