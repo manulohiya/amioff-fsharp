@@ -11,9 +11,6 @@ printfn "OK"
 #I "bin/Debug"
 #r "AmIOff.HttpApi.exe"
 
-#load "Request.fs"
-#load "WebService.fs"
-
 open AmIOff.HttpApi
 open System
 open Suave
