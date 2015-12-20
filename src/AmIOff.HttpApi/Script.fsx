@@ -8,7 +8,7 @@ printfn "OK"
 #I @"../../packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
 
-#I "bin/Release"
+#I "bin/Debug"
 #r "AmIOff.HttpApi.exe"
 
 #load "Request.fs"
