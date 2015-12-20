@@ -3,9 +3,9 @@
 
 printfn "OK"
 
-#load "Request.fs"
 #I @"../../packages/FSharp.Data/lib/net40/"
 #r "FSharp.Data.dll"
+#load "Request.fs"
 
 open FSharp.Data
 open System.Net
@@ -38,11 +38,11 @@ Timesheet.residentIsBusy resident dateTime' amionResponse
 |> not
 |> printfn "Resident should not be busy: %A"
 
-let residents = Timesheet.toResidents amionResponse
+let residents = Timesheet.toResidents amionResponse;;
 
 let freeResidents = 
-    let now = System.DateTime.Now
-    Timesheet.freeResidents residents now amionResponse
+    let now = System.DateTime.Now.AddHours(10.)
+    Timesheet.freeResidents residents now amionResponse;;
 
 freeResidents
 |> List.iter (fun resident -> 
