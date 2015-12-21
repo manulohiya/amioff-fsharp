@@ -170,6 +170,15 @@ module Resident =
         let last = resident.last
         sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
 
+    let ignoreWithParenthesis (residents : Resident list) = 
+        let hasParenthesis (str : string) = 
+            str.Contains ("(") || str.Contains(")")
+        residents
+        |> List.filter (fun resident -> 
+            let first = resident.first
+            let last = resident.last
+            not (hasParenthesis first || hasParenthesis last))
+
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Timesheet =

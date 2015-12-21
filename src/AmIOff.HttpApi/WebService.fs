@@ -24,7 +24,7 @@ module Service =
                 let! raw = Request.fetchRaw request
                 match Timesheet.tryMapAmionResponseToCsv raw with
                 | Some timesheet -> 
-                    let residents = Timesheet.toResidents timesheet
+                    let residents = Timesheet.toResidents timesheet |> Resident.ignoreWithParenthesis
                     let freeResidents = Timesheet.freeResidents residents time timesheet
                     let freeResidentsAsJSON = 
                         let joined = 
