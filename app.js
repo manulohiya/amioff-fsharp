@@ -27,18 +27,18 @@ $("#program-search").submit(function(event) {
 	
  // $.get('/api/+$programName/+unixtime',
   	// function(names) {
-  		
+
   		$results.empty();
-  		
+
 
   		var names = [
   		{firstName: "Manu", lastName: "Lohiya"},
   		{firstName: "Neil", lastName: "Maheshwari"}
 
   		];
-  		
+
   		console.log(names)	
-  		
+
   		_.each(names, function (name, index) {
   			var $name = $(_results(name));
   			$name.attr('data-index', index);
@@ -55,9 +55,12 @@ $("#program-search").submit(function(event) {
 
 $('#datetimepicker').datetimepicker({
 	format: 'MM/dd/yyyy hh:mm',
-	language: 'en',
+	showMeridian: true,
+	language: 'en',	
 	pickSeconds: false, 
 	pick12HourFormat: true
+	
+
 });
 
 

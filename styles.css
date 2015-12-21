@@ -1,5 +1,6 @@
 body {
   font-family: 'Montserrat', sans-serif;
+  color: #000;
 }
 
 .jumbotron {
@@ -8,11 +9,11 @@ body {
   height: 300px;
 }
 
-.jumbotron h1, h3 {
+.jumbotron h1, h4 {
   position: relative;
   z-index: 2;
-  color: #000;
-  font-family: helvetica;
+  
+  
  
 
 }
@@ -36,5 +37,9 @@ body {
 
 [class^="icon-"], [class*=" icon-"] {
   
-    vertical-align: top;
+    vertical-align: middle;
+    
+
 }
+
+
