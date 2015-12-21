@@ -11,8 +11,11 @@ open Suave.Http.Files
 module Service = 
 
     let private ofUnixTime (unix : int) = 
-        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0,System.DateTimeKind.Utc);
-        dtDateTime.AddSeconds(float unix).ToLocalTime()
+        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Utc)
+        printfn "DateTime: %A" dtDateTime
+        printfn "UNIX: %d" unix
+        dtDateTime.AddSeconds(float unix).ToUniversalTime()
+        |> fun x -> printfn "DateTime: %A" x; x
 
     let private findFreeResidentsAsJson  (login, time) (x : HttpContext) = 
         let time = ofUnixTime time
@@ -22,7 +25,7 @@ module Service =
             | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
             | Some request -> 
                 let! raw = Request.fetchRaw request
-                match Timesheet.tryMapAmionResponseToCsv raw with
+                match Timesheet.tryMapAmionResponseToCsv 5 raw with // 5 is the size of header from api
                 | Some timesheet -> 
                     let residents = Timesheet.toResidents timesheet |> Resident.ignoreWithParenthesis
                     let freeResidents = Timesheet.freeResidents residents time timesheet

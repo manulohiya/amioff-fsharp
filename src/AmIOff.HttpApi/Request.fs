@@ -183,11 +183,11 @@ module Resident =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Timesheet =
 
-    let tryMapAmionResponseToCsv (rawAmionResp : string) = 
+    let tryMapAmionResponseToCsv (headerLines : int) (rawAmionResp : string) = 
         let csvHeader = "\"Staff name\",\"Staff name - unique ID\",\"Staff name - backup ID\",\"Assignment name (in quotes)\",\"Assignment name (in quotes) - unique ID\",\"Assignment name (in quotes) - backup ID\",\"Date of assignment (GMTO=-8 1)\",\"Time of assignment (GMTO=-8 1) Start\",\"Time of assignment (GMTO=-8 1) End\""
         try 
             rawAmionResp.Split '\n'
-            |> fun x -> x.[5..]
+            |> fun x -> x.[headerLines..]
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
             |> Timesheet.Parse
@@ -228,14 +228,18 @@ module Timesheet =
         |> mapToHour 
         |> Option.map (addToDateTime assignmentDate)
 
-    let internal maybeStartTime = 
-        maybeTime (fun scheduleItem -> 
+    let internal maybeStartTime scheduleItem = 
+        scheduleItem
+        |> maybeTime (fun scheduleItem -> 
             scheduleItem.``Time of assignment (GMTO=-8 1) Start``)
+        |> Option.map (fun time -> 
+            System.TimeZoneInfo.ConvertTime(time, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime())
 
     let internal maybeEndTime startTime = 
         maybeTime (fun scheduleItem ->
             scheduleItem.``Time of assignment (GMTO=-8 1) End``)
         >> Option.map (fun endTime -> 
+            let endTime = System.TimeZoneInfo.ConvertTime(endTime, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime()
             if startTime > endTime then
                 endTime.AddDays(1.)
             else endTime)
@@ -246,12 +250,23 @@ module Timesheet =
         |> Seq.exists (fun scheduleItem ->
             scheduleItem 
             |> maybeStartTime
-            |> Option.exists (fun startTime -> 
+            |> Option.exists (fun startTime ->
+                let id = hash scheduleItem
+                printfn "RESIDENT: %s %s" resident.first resident.last
+                printfn "%s %d StartTime: %A" resident.first id startTime
+                printfn "%s %d Time: %A" resident.first id time 
                 let isAfterStart = startTime <= time
                 let isBeforeEnd = 
-                    scheduleItem
-                    |> maybeEndTime startTime
-                    |> Option.exists ((<=) time)
+                    let maybeEndTime = 
+                        scheduleItem
+                        |> maybeEndTime startTime
+                    match maybeEndTime with
+                    | Some endTime -> 
+                        printfn "%s %d EndTime: %A" resident.first id endTime
+                        time <= endTime
+                    | None -> false
+                printfn "%s %d IsAfterStart: %A" resident.first id isAfterStart
+                printfn "%s %d isBeforEnd: %A" resident.first id isBeforeEnd
                 isAfterStart && isBeforeEnd))
 
     let freeResidents residents time timesheet = 
