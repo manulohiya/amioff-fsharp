@@ -25,27 +25,27 @@ $("#program-search").submit(function(event) {
 	console.log("Unix: "+unixtime)
 	
 	
- // $.get('/api/+$programName/+unixtime',
-  	// function(names) {
 
-  		$results.empty();
+	$.get('/api/'+$programName+'/'+unixtime,
+	  	function(data) {
+	  		$results.empty();
+	  		// var names = [
+	  		// {firstName: "Manu", lastName: "Lohiya"},
+	  		// {firstName: "Neil", lastName: "Maheshwari"}
 
+	  		// ];
+	  		
+	  		console.log("NAMES: " + data)	
+	  		
+	  		_.each(data, function (name, index) {
+	  			var $name = $(_results(name));
+	  			$name.attr('data-index', index);
+	  			$results.append($name);
+	  		});
 
-  		var names = [
-  		{firstName: "Manu", lastName: "Lohiya"},
-  		{firstName: "Neil", lastName: "Maheshwari"}
+		}	
+	);
 
-  		];
-
-  		console.log(names)	
-
-  		_.each(names, function (name, index) {
-  			var $name = $(_results(name));
-  			$name.attr('data-index', index);
-  			$results.append($name);
-  		});
-
-	// }	
 });
 
 
