@@ -42,26 +42,13 @@ module Service =
                 | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
         }                
 
-    let stylesAndScripts = 
-        [ for file in System.IO.Directory.EnumerateFiles ("content") ->
-            printfn "File: %A" file
-            path ("/" + file) >>= Suave.Http.Files.file file
-        ]
-
     let routes = 
         let returnJson = Writers.setMimeType "application/json; charset=utf-8"
         [
-          //for f in stylesAndScripts -> f
           pathScan "/api/%s/%d" findFreeResidentsAsJson >>= returnJson
           path "/" >>= Suave.Http.Files.file "content/index.html"
+          pathScan "/%s" (Suave.Http.Files.file  << sprintf "content/%s")
           RequestErrors.NOT_FOUND "Found no handlers" 
         ]
 
-    let getRoutes = stylesAndScripts @ routes
-
-    let residentsApp =
-        let homePath = __SOURCE_DIRECTORY__ + "/content/"
-        let fullPath = Suave.Http.Files.resolvePath homePath "index.html"
-        printfn "FullPath :%s" fullPath 
-        printfn "HomePath : %s" homePath 
-        GET >>= choose getRoutes 
+    let residentsApp = GET >>= choose routes 
