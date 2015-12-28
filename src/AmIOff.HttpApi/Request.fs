@@ -232,14 +232,14 @@ module Timesheet =
         scheduleItem
         |> maybeTime (fun scheduleItem -> 
             scheduleItem.``Time of assignment (GMTO=-8 1) Start``)
-        |> Option.map (fun time -> 
-            System.TimeZoneInfo.ConvertTime(time, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime())
+//        |> Option.map (fun time -> 
+//            System.TimeZoneInfo.ConvertTime(time, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime())
 
     let internal maybeEndTime startTime = 
         maybeTime (fun scheduleItem ->
             scheduleItem.``Time of assignment (GMTO=-8 1) End``)
         >> Option.map (fun endTime -> 
-            let endTime = System.TimeZoneInfo.ConvertTime(endTime, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime()
+//            let endTime = System.TimeZoneInfo.ConvertTime(endTime, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime()
             if startTime > endTime then
                 endTime.AddDays(1.)
             else endTime)
