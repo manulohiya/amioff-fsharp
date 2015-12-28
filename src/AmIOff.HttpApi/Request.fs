@@ -138,46 +138,6 @@ module Request =
                 http
         Http.AsyncRequestString(baseUrl, query = query, httpMethod = "GET", customizeHttpRequest = logging)
 
-[<RequireQualifiedAccess>]
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module Resident = 
-
-    type private JsonResident = 
-        {
-            first : string
-            last : string
-        }
-
-    let tryCreate (name : string) id : Resident option=
-        try
-            let names = name.Split ','
-            {
-
-                Resident.first = names.[1].Trim()
-                Resident.last = names.[0].Trim()
-                Resident.id = id
-            } 
-            |> Some
-        with
-            | exn -> 
-                printfn "Could not build resident from (name : %A, id :%A)"
-                        name 
-                        id
-                None
-
-    let toJson (resident : Resident) = 
-        let first = resident.first
-        let last = resident.last
-        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
-
-    let ignoreWithParenthesis (residents : Resident list) = 
-        let hasParenthesis (str : string) = 
-            str.Contains ("(") || str.Contains(")")
-        residents
-        |> List.filter (fun resident -> 
-            let first = resident.first
-            let last = resident.last
-            not (hasParenthesis first || hasParenthesis last))
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -219,6 +179,61 @@ module ScheduleItem =
                 endTime.AddDays(1.)
             else endTime)
 
+    let isBusy (time : System.DateTime) offset (scheduleItem : ScheduleItem) = 
+        scheduleItem 
+        |> tryStartTime offset
+        |> Option.exists (fun startTime ->
+            let isAfterStart = startTime <= time
+            let isBeforeEnd = 
+                scheduleItem
+                |> tryEndTime offset startTime
+                |> Option.exists (fun endTime -> time <= endTime)
+            isAfterStart && isBeforeEnd)
+
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Resident = 
+
+    type private JsonResident = 
+        {
+            first : string
+            last : string
+        }
+
+    let tryCreate (name : string) id : Resident option=
+        try
+            let names = name.Split ','
+            {
+
+                Resident.first = names.[1].Trim()
+                Resident.last = names.[0].Trim()
+                Resident.id = id
+            } 
+            |> Some
+        with
+            | exn -> 
+                printfn "Could not build resident from (name : %A, id :%A)"
+                        name 
+                        id
+                None
+
+    let toJson (resident : Resident) = 
+        let first = resident.first
+        let last = resident.last
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
+
+    let ignoreWithParenthesis (residents : Resident list) = 
+        let hasParenthesis (str : string) = 
+            str.Contains ("(") || str.Contains(")")
+        residents
+        |> List.filter (fun resident -> 
+            let first = resident.first
+            let last = resident.last
+            not (hasParenthesis first || hasParenthesis last))
+
+    let isBusy time offset scheduleItem resident =
+        ScheduleItem.isBusy time offset scheduleItem && scheduleItem.``Staff name - unique ID`` = resident.id 
+
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Timesheet =
@@ -259,16 +274,7 @@ module Timesheet =
     let residentIsBusy (resident : Resident) (time : System.DateTime) offset (timesheet : Timesheet) = 
         timesheet.Rows 
         |> Seq.filter (fun scheduleItem -> scheduleItem.``Staff name - unique ID`` = resident.id)
-        |> Seq.exists (fun scheduleItem ->
-            scheduleItem 
-            |> ScheduleItem.tryStartTime offset
-            |> Option.exists (fun startTime ->
-                let isAfterStart = startTime <= time
-                let isBeforeEnd = 
-                    scheduleItem
-                    |> ScheduleItem.tryEndTime offset startTime
-                    |> Option.exists (fun endTime -> time <= endTime)
-                isAfterStart && isBeforeEnd))
+        |> Seq.exists (fun scheduleItem -> Resident.isBusy time offset scheduleItem resident)
 
     let freeResidents residents time offset timesheet = 
         residents
