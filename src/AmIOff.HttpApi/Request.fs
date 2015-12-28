@@ -183,18 +183,29 @@ module Resident =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Timesheet =
 
-    let tryMapAmionResponseToCsv (rawAmionResp : string) = 
-        let csvHeader = "\"Staff name\",\"Staff name - unique ID\",\"Staff name - backup ID\",\"Assignment name (in quotes)\",\"Assignment name (in quotes) - unique ID\",\"Assignment name (in quotes) - backup ID\",\"Date of assignment (GMTO=-8 1)\",\"Time of assignment (GMTO=-8 1) Start\",\"Time of assignment (GMTO=-8 1) End\""
+    let tryMapAmionResponseToCsv (headerLines : int) (rawAmionResp : string) = 
+        let csvHeader = "\"Staff name\",\"Staff name - unique ID\",\"Staff name - backup ID\",\"Assignment name (in quotes)\",\"Assignment name (in quotes) - unique ID\",\"Assignment name (in quotes) - backup ID\",\"Date of assignment\",\"Time of assignment Start\",\"Time of assignment End\""
         try 
+            let offset =
+                (new System.Text.RegularExpressions.Regex("(?<=GMTO=)([^\s]*)"))
+                    .Match(rawAmionResp)
+                    .Groups
+                    .Item(0)
+                    .Value
+            printfn "Offset: %A" offset
             rawAmionResp.Split '\n'
-            |> fun x -> x.[5..]
+            |> fun x -> x.[headerLines..]
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
-            |> Timesheet.Parse
+            |> fun result -> 
+                printfn "Result: %s" result
+                (Timesheet.Parse result, int offset) // , offset)
             |> Some
         with
             exn -> 
-                printfn "Could not map amion string to csv with error: %s" exn.Message
+                printfn "Could not map amion string to csv with error: %s [stack trace: %s]" 
+                        exn.Message
+                        exn.StackTrace
                 None
 
     let toResidents (timesheet : Timesheet) = 
@@ -222,40 +233,60 @@ module Timesheet =
             .AddMinutes(float minute)
     
     let private maybeTime f (scheduleItem : ScheduleItem) = 
-        let assignmentDate = scheduleItem.``Date of assignment (GMTO=-8 1)``
+        let assignmentDate = scheduleItem.``Date of assignment``
         scheduleItem
         |> f
         |> mapToHour 
         |> Option.map (addToDateTime assignmentDate)
 
-    let internal maybeStartTime = 
-        maybeTime (fun scheduleItem -> 
-            scheduleItem.``Time of assignment (GMTO=-8 1) Start``)
+    let internal maybeStartTime offset scheduleItem = 
+        scheduleItem
+        |> maybeTime (fun scheduleItem -> 
+            scheduleItem.``Time of assignment Start``)
+        |> Option.map (fun date -> date.AddHours (float offset))
+//        |> Option.map (fun time -> 
+//            System.TimeZoneInfo.ConvertTime(time, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime())
 
-    let internal maybeEndTime startTime = 
+    let internal maybeEndTime offset startTime = 
         maybeTime (fun scheduleItem ->
-            scheduleItem.``Time of assignment (GMTO=-8 1) End``)
+            scheduleItem.``Time of assignment End``)
         >> Option.map (fun endTime -> 
+//            let endTime = System.TimeZoneInfo.ConvertTime(endTime, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime()
+            let endTime = endTime.AddHours (float offset)
             if startTime > endTime then
                 endTime.AddDays(1.)
             else endTime)
 
-    let residentIsBusy (resident : Resident) (time : System.DateTime) (timesheet : Timesheet) = 
+    let residentIsBusy (resident : Resident) (time : System.DateTime) offset (timesheet : Timesheet) = 
         timesheet.Rows 
         |> Seq.filter (fun scheduleItem -> scheduleItem.``Staff name - unique ID`` = resident.id)
         |> Seq.exists (fun scheduleItem ->
             scheduleItem 
-            |> maybeStartTime
-            |> Option.exists (fun startTime -> 
+            |> maybeStartTime offset
+            |> Option.exists (fun startTime ->
+                let id = hash scheduleItem
+                printfn "RESIDENT: %s %s" resident.first resident.last
+                printfn "%s %d StartTime: %A" resident.first id startTime
+                printfn "%s %d Input Time: %A" resident.first id time 
+                printfn "%s %d Input TimeKind: %A" resident.first id time.Kind
+                printfn "%s %d StartTimeKind: %A" resident.first id startTime.Kind
                 let isAfterStart = startTime <= time
                 let isBeforeEnd = 
-                    scheduleItem
-                    |> maybeEndTime startTime
-                    |> Option.exists ((<=) time)
+                    let maybeEndTime = 
+                        scheduleItem
+                        |> maybeEndTime offset startTime
+                    match maybeEndTime with
+                    | Some endTime -> 
+                        printfn "%s %d EndTimeKind: %A" resident.first id endTime.Kind
+                        printfn "%s %d EndTime: %A" resident.first id endTime
+                        time <= endTime
+                    | None -> false
+                printfn "%s %d IsAfterStart: %A" resident.first id isAfterStart
+                printfn "%s %d isBeforEnd: %A" resident.first id isBeforeEnd
                 isAfterStart && isBeforeEnd))
 
-    let freeResidents residents time timesheet = 
+    let freeResidents residents time offset timesheet = 
         residents
         |> List.filter (fun (resident : Resident) -> 
-            not (residentIsBusy resident time timesheet))
+            not (residentIsBusy resident time offset timesheet))
         |> List.sortBy (fun resident -> resident.first)

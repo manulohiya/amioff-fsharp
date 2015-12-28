@@ -33,7 +33,7 @@ let main args =
             | exn -> 3000
       { Web.defaultConfig with
           homeFolder = Some __SOURCE_DIRECTORY__ 
-          logger = Logging.Loggers.saneDefaultsFor Logging.LogLevel.Warn
+          logger = Logging.Loggers.saneDefaultsFor Logging.LogLevel.Verbose
           bindings = [ Types.HttpBinding.mk' Types.HTTP "0.0.0.0" port ] }
 
     Web.startWebServer serverConfig Service.residentsApp

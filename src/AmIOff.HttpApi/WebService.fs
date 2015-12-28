@@ -8,13 +8,17 @@ open Suave.Web
 open Suave.Json
 open Suave.Types
 open Suave.Http.Files
+
 module Service = 
 
     let private ofUnixTime (unix : int) = 
-        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0,System.DateTimeKind.Utc);
-        dtDateTime.AddSeconds(float unix).ToLocalTime()
+        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local)
+        printfn "Unix DateTime: %A" dtDateTime
+        printfn "UNIX: %d" unix
+        dtDateTime.AddSeconds(float unix)
+        |> fun x -> printfn "DateTime: %A" x; x
 
-    let private findFreeResidentsAsJson  (login, time) (x : HttpContext) = 
+    let private findFreeResidentsAsJson (login, time) (x : HttpContext) = 
         let time = ofUnixTime time
         async {
             let maybeRequest = Request.tryCreate (Month.ofInt time.Month) time.Year login
@@ -22,10 +26,10 @@ module Service =
             | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
             | Some request -> 
                 let! raw = Request.fetchRaw request
-                match Timesheet.tryMapAmionResponseToCsv raw with
-                | Some timesheet -> 
+                match Timesheet.tryMapAmionResponseToCsv 5 raw with // 5 is the size of header from api
+                | Some (timesheet, offset) -> 
                     let residents = Timesheet.toResidents timesheet |> Resident.ignoreWithParenthesis
-                    let freeResidents = Timesheet.freeResidents residents time timesheet
+                    let freeResidents = Timesheet.freeResidents residents time offset timesheet
                     let freeResidentsAsJSON = 
                         let joined = 
                             freeResidents 

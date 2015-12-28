@@ -1,4 +1,4 @@
-Staff name, Staff name - unique ID, Staff name - backup ID, Assignment name (in quotes), Assignment name (in quotes) - unique ID, Assignment name (in quotes) - backup ID, Date of assignment (GMTO=-8 1), Time of assignment (GMTO=-8 1) Start, Time of assignment (GMTO=-8 1) End
+Staff name, Staff name - unique ID, Staff name - backup ID, Assignment name (in quotes), Assignment name (in quotes) - unique ID, Assignment name (in quotes) - backup ID, Date of assignment, Time of assignment Start, Time of assignment End
 "UCSF Clerk",3257,710,"UCSF-EM CLERK",122,95,12-10-15,0700,1500
 "Wood, William",163,39,"UCSF-EM 7a-3p (Blue)",184,96,12-10-15,0700,1500
 "Pettersen, Kenneth (IM)",3467,268,"UCSF-EM 7a-3p (Blue)",430,97,12-10-15,0700,1500
