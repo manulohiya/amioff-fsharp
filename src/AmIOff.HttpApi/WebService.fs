@@ -15,10 +15,10 @@ module Service =
         let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local)
         printfn "Unix DateTime: %A" dtDateTime
         printfn "UNIX: %d" unix
-        dtDateTime.ToLocalTime().AddSeconds(float unix)
+        dtDateTime.AddSeconds(float unix)
         |> fun x -> printfn "DateTime: %A" x; x
 
-    let private findFreeResidentsAsJson  (login, time) (x : HttpContext) = 
+    let private findFreeResidentsAsJson (login, time) (x : HttpContext) = 
         let time = ofUnixTime time
         async {
             let maybeRequest = Request.tryCreate (Month.ofInt time.Month) time.Year login
@@ -27,9 +27,9 @@ module Service =
             | Some request -> 
                 let! raw = Request.fetchRaw request
                 match Timesheet.tryMapAmionResponseToCsv 5 raw with // 5 is the size of header from api
-                | Some timesheet -> 
+                | Some (timesheet, offset) -> 
                     let residents = Timesheet.toResidents timesheet |> Resident.ignoreWithParenthesis
-                    let freeResidents = Timesheet.freeResidents residents time timesheet
+                    let freeResidents = Timesheet.freeResidents residents time offset timesheet
                     let freeResidentsAsJSON = 
                         let joined = 
                             freeResidents 
