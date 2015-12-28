@@ -8,10 +8,11 @@ open Suave.Web
 open Suave.Json
 open Suave.Types
 open Suave.Http.Files
+
 module Service = 
 
     let private ofUnixTime (unix : int) = 
-        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Utc)
+        let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local)
         printfn "Unix DateTime: %A" dtDateTime
         printfn "UNIX: %d" unix
         dtDateTime.ToLocalTime().AddSeconds(float unix)

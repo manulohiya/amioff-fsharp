@@ -254,7 +254,9 @@ module Timesheet =
                 let id = hash scheduleItem
                 printfn "RESIDENT: %s %s" resident.first resident.last
                 printfn "%s %d StartTime: %A" resident.first id startTime
-                printfn "%s %d Time: %A" resident.first id time 
+                printfn "%s %d Input Time: %A" resident.first id time 
+                printfn "%s %d Input TimeKind: %A" resident.first id time.Kind
+                printfn "%s %d StartTimeKind: %A" resident.first id startTime.Kind
                 let isAfterStart = startTime <= time
                 let isBeforeEnd = 
                     let maybeEndTime = 
@@ -262,6 +264,7 @@ module Timesheet =
                         |> maybeEndTime startTime
                     match maybeEndTime with
                     | Some endTime -> 
+                        printfn "%s %d EndTimeKind: %A" resident.first id endTime.Kind
                         printfn "%s %d EndTime: %A" resident.first id endTime
                         time <= endTime
                     | None -> false
