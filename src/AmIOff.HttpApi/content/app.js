@@ -25,6 +25,7 @@ $("#program-search").submit(function(event) {
 	console.log("Unix: "+unixtime)
 	
 	
+
 	$.get('/api/'+$programName+'/'+unixtime,
 	  	function(data) {
 	  		$results.empty();
@@ -44,6 +45,7 @@ $("#program-search").submit(function(event) {
 
 		}	
 	);
+
 });
 
 
@@ -53,9 +55,12 @@ $("#program-search").submit(function(event) {
 
 $('#datetimepicker').datetimepicker({
 	format: 'MM/dd/yyyy hh:mm',
-	language: 'en',
+	showMeridian: true,
+	language: 'en',	
 	pickSeconds: false, 
 	pick12HourFormat: true
+	
+
 });
 
 

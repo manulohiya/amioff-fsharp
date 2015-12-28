@@ -19,13 +19,13 @@
 	<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
 	<!-- Datetimepicker CSS -->
-	<link rel="stylesheet" type = "text/css" href="content/bootstrap-datetimepicker-standalone.css">
+	<link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker-standalone.css">
 
 	<!-- Datetimepicker CSS2 -->
-	<link rel="stylesheet" type = "text/css" href="content/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker.css">
 
 	<!-- link to stylesheet (always require after Bootstrap) -->
-	<link rel="stylesheet" type="text/css" href="content/styles.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
 
 
 	
@@ -38,18 +38,18 @@
 	
 	<!-- Social Tags -->
 	<title>amioff</title>
-	<meta name="description" content="XYZ!" />
+	<meta name="description" content="Easiest way for medical residents find other residents to hang out with or swap shifts with" />
 
 	<!-- Twitter Card data -->
-	<meta name="twitter:card" value="XYZ">
+	<meta name="twitter:card" value="Easiest way for medical residents find other residents to hang out with or swap shifts with">
 
 	<!-- Open Graph data -->
-	<meta property="og:title" content="XYZ" />
+	<meta property="og:title" content="Easiest way for medical residents find other residents to hang out with or swap shifts with" />
 	<meta property="og:type" content="article" />
-	<meta property="og:url" content="https://amioff.herokuapp.com" />
-	<!-- <meta property="og:image" content="http://i.imgur.com/LPKyJ3Ch.png?1" /> -->
-	<meta property="og:description" content="This app will help you XYZ!" />
-	<!-- <link rel="shortcut icon" type="image/x-icon" href="https://i.imgur.com/ChHuMrbs.png" /> -->
+	<meta property="og:url" content="https://amioff.work" />
+	<meta property="og:image" content="http://www.soelden.com/urlaub/images/SD/SO/headerbilder/header_biken_bikewash,method=scale,prop=data,id=1200-510.jpg" />
+	<meta property="og:description" content="Easiest way for medical residents find other residents to hang out with or swap shifts with" />
+	<link rel="shortcut icon" type="image/x-icon" href="http://i.imgur.com/EO1uCoes.png" />
 </head>
 <body>
 
@@ -57,7 +57,7 @@
 		<div class="container">
 			<left>
 				<h1>AMIOFF<h1>
-					<h3>The easiest way for medical residents to find fellow residents to hang out with</h3>
+					<h4>The easiest way for medical residents to find fellow residents to hang out or swap shifts with</h4>
 			</left>
 				<img src='http://www.soelden.com/urlaub/images/SD/SO/headerbilder/header_biken_bikewash,method=scale,prop=data,id=1200-510.jpg'>
 		</div>
@@ -68,27 +68,25 @@
 			<div class="col-sm-6">
 				<left>
 
-					<h2> Pick a time </h2>
+					<h2> Pick a time that you are free </h2>
 
 					<div class="well">
-						1. Pick Date
-						<div id = "date-form" class = "form-group"> 
-
-							<div id="datetimepicker" class="input date">
-								
-								<input class = "form-inline" type="text" id = "date">
-
-								<span class="add-on">
-
+						1. Pick Date & Time
+						<form class = "form-inline">
+						
+							<div id="datetimepicker" class = "form-group">							
+								<input class = "form-control"  id = "date" placeholder="Click calendar icon">
+								<span class="add-on glyphicon-calendar">
 									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
 									</i>
 
 								</span>
 							</div>
-						</div>
+						
+						</form>
 
 						<form class = "form-inline" id="program-search">
-						2. Program login <br>
+						2. Program (Amion) login <br>
 							<div class="form-group"> 
 								
 								<input class="form-control" id="program-name" placeholder="e.g. UCSFEM" autofocus>
