@@ -170,14 +170,18 @@ module ScheduleItem =
             scheduleItem.``Time of assignment Start``)
         |> Option.map (fun date -> date.AddHours (float offset))
 
-    let internal tryEndTime offset startTime = 
-        maybeTime (fun scheduleItem ->
-            scheduleItem.``Time of assignment End``)
-        >> Option.map (fun endTime -> 
-            let endTime = endTime.AddHours (float offset)
-            if startTime > endTime then
-                endTime.AddDays(1.)
-            else endTime)
+    let internal tryEndTime offset scheduleItem = 
+        scheduleItem 
+        |> tryStartTime offset
+        |> Option.bind (fun startTime -> 
+            scheduleItem
+            |> maybeTime (fun scheduleItem ->
+                scheduleItem.``Time of assignment End``)
+            |> Option.map (fun endTime -> 
+                let endTime = endTime.AddHours (float offset)
+                if startTime > endTime then
+                    endTime.AddDays(1.)
+                else endTime))
 
     let isBusy (time : System.DateTime) offset (scheduleItem : ScheduleItem) = 
         scheduleItem 
@@ -186,7 +190,7 @@ module ScheduleItem =
             let isAfterStart = startTime <= time
             let isBeforeEnd = 
                 scheduleItem
-                |> tryEndTime offset startTime
+                |> tryEndTime offset
                 |> Option.exists (fun endTime -> time <= endTime)
             isAfterStart && isBeforeEnd)
 
@@ -273,11 +277,40 @@ module Timesheet =
 
     let residentIsBusy (resident : Resident) (time : System.DateTime) offset (timesheet : Timesheet) = 
         timesheet.Rows 
-        |> Seq.filter (fun scheduleItem -> scheduleItem.``Staff name - unique ID`` = resident.id)
-        |> Seq.exists (fun scheduleItem -> Resident.isBusy time offset scheduleItem resident)
+        |> Seq.filter (fun scheduleItem -> 
+            scheduleItem.``Staff name - unique ID`` = resident.id)
+        |> Seq.exists (fun scheduleItem -> 
+            Resident.isBusy time offset scheduleItem resident)
 
     let freeResidents residents time offset timesheet = 
         residents
         |> List.filter (fun (resident : Resident) -> 
             not (residentIsBusy resident time offset timesheet))
         |> List.sortBy (fun resident -> resident.first)
+
+    let residentsFreeUntil resident timeFree offset (timesheet : Timesheet) = 
+        let shifts = 
+            timesheet.Rows 
+            |> Seq.filter (fun scheduleItem -> 
+                scheduleItem.``Staff name - unique ID`` = resident.id) //TODO: Make sure timesheet is sorted
+        let isBeforeFirst = 
+            try 
+                timesheet.Rows
+                |> Seq.head
+                |> ScheduleItem.tryStartTime offset 
+                |> Option.exists (fun t -> timeFree < t)
+            with
+                | _ -> 
+                    printfn "Timesheet is empty ?"
+                    false
+        if isBeforeFirst then
+            timesheet.Rows 
+            |> Seq.tryHead
+        else 
+            shifts
+            |> Seq.tryFindIndex (fun scheduleItem -> 
+                scheduleItem 
+                |> ScheduleItem.tryEndTime offset 
+                |> Option.exists (fun t -> timeFree > t))
+            |> Option.bind (fun i -> Seq.tryItem (i + 1) shifts)
+        |> Option.map (ScheduleItem.tryStartTime offset)
