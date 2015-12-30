@@ -38,8 +38,14 @@ body {
 [class^="icon-"], [class*=" icon-"] {
   
     vertical-align: middle;
-    
 
 }
 
+select {
+    width: 80px !important;
+    margin-left: 20px;
+    }
 
+#date {
+  min-width: 100px;
+}
