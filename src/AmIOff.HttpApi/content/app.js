@@ -19,11 +19,30 @@ $("#program-search").submit(function(event) {
 	
 	var $programName = $('#program-name').val();
 	var $date = $('#date').val();
-	var unixtime = Date.parse($date).getTime()/1000
+	var $timeZone = $('#timeZone :selected').text();
+	var dateTimeZone = $date+" "+$timeZone;
+	
+	// var value = $('#dropDownId:selected').text()
+	// var currentTime = $('#date').val();
+	
+	
+
+
+
+
+	// Pick either the date from form. If no date entered, select current time
+	
+	var unixtime = Date.parse(dateTimeZone).getTime()/1000; 
 	console.log("Program Name: "+$programName)
 	console.log("Date: "+$date)
-	console.log("Unix: "+unixtime)
+	console.log("TimeZone: "+$timeZone)
+	console.log("Date with timezone: "+dateTimeZone)
+	console.log("Unix-timezone: "+unixtime)
 	
+	
+	
+
+
 	
 
 	$.get('/api/'+$programName+'/'+unixtime,
