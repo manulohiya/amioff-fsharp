@@ -9,7 +9,10 @@ var _results = _.template($('#results-template').html());
 
 
 // On page load
-
+var timeInMs = Date.now();
+var today = new Date();  
+var offset = -(today.getTimezoneOffset()/60);  
+console.log(timeInMs)
 
 
 // On submit button
