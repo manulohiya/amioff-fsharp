@@ -19,6 +19,7 @@ $('#timepicker').timepicker();
 
 var dateChecker = function(date) {
 	console.log("dateChecker function is working")
+	var newDate = date;
 	var myRe = /.+?(?=\/)/;
 	var myArray = myRe.exec(date);
 	var myRe2 = /.{4}$/;
@@ -33,7 +34,7 @@ var dateChecker = function(date) {
 		yearstr = year.toString()
 		console.log("Year (after) " + yearstr);
 		var removeYear = date.slice(0, - 4);
-		var newDate = removeYear + yearstr;				
+		newDate = removeYear + yearstr;				
 	}
 	return newDate
 };
