@@ -12,18 +12,18 @@
 
 	<!-- Date/Time Picker -->
 	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+
+	<!-- jQueryUI CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">
+
+	<!-- Timepicker CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.9/jquery.timepicker.css" rel="stylesheet">
 	
-	<link rel="stylesheet" type="text/css" media="screen"
-	href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
+
 
 	<!-- Google Fonts -->
 	<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
-	<!-- Datetimepicker CSS -->
-	<link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker-standalone.css">
-
-	<!-- Datetimepicker CSS2 -->
-	<link rel="stylesheet" type = "text/css" href="bootstrap-datetimepicker.css">
 
 	<!-- link to stylesheet (always require after Bootstrap) -->
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -72,30 +72,21 @@
 					<h2> Pick a time </h2>
 
 					<div class="well">
-						1. Pick Date & Time 
-						<form class = "form-inline">
-						
-							<div id="datetimepicker" class = "form-group">	
+					1. Pick Date & Time
 
-								<input required class = "form-control"  id = "date" placeholder="Click calendar icon">								
-								<span class="add-on glyphicon-calendar">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-									</i>
-
-									<select id = "timeZone" required>
+					<p>Date: <input type="text" id="datepicker"></p>
+					<p>Time: <input type="text" id="timepicker"></p>
+					<p>Timezone:
+						<select id = "timeZone" required>
 										<option value="PST">PST</option>
 									  	<option value="EST">EST</option>
 									  	<option value="CST">CST</option>
 									  	<option value="MT">MST</option>
 									 
-									</select>
+						</select>
+					</p>
 
-								</span>
-
-
-							</div>
 						
-						</form>
 
 						<form class = "form-inline" id="program-search">
 						2. Program (Amion) login <br>
@@ -117,7 +108,7 @@
 
 				<div class="col-sm-6">
 					<left>
-						<h2> Here's who is free</h2>
+						<h2> Here's who is NOT WORKING</h2>
 						<div id="results"></div>
 
 
@@ -137,10 +128,17 @@
 
 
 
-<!-- link to javascript file -->
+<!-- link to javascript files -->
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js">
 </script> 
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js">
+</script> 
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.9/jquery.timepicker.js">
+</script> 
+
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js">
 </script> 
@@ -155,20 +153,16 @@
 <!-- Date.js -->
 <script type="text/javascript" src="date.js"></script>
 
-<!-- DatetimepickerJS -->
-<script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
 
-<!-- DatetimepickerJS -->
-<script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js"></script>
 
-<!-- app.JA -->
+<!-- app.JS -->
 <script type="text/javascript" src="app.js"></script> 
 
 <!-- underscore template -->
   <script type="text/template" id="results-template">  
   	<div class="results">
   	 	            
-          <li> <%= firstName %>  <%= lastName %> </li>
+          <li> <%= firstName %>  <%= lastName %>, free until <%= firstName %> on <%= lastName %> </li>
         
       	
     </div>       
