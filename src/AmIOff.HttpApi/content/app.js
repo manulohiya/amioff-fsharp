@@ -9,12 +9,16 @@ var _results = _.template($('#results-template').html());
 
 
 // On page load
-$( "#datepicker" ).datepicker({ 
-		minDate: -60, 
-		maxDate: 60 
-	});
+$("#datepicker" ).datepicker({ 
+	minDate: -60, 
+	maxDate: 60 
+});
 
-$('#timepicker').timepicker();
+$('#timepicker').timepicker({
+	step: 60,
+	disableTouchKeyboard: true
+
+});
 
 
 var dateChecker = function(date) {
