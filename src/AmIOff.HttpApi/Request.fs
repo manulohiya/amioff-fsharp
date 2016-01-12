@@ -198,7 +198,6 @@ module Timesheet =
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
             |> fun result -> 
-                printfn "Result: %s" result
                 (Timesheet.Parse result, int offset) // , offset)
             |> Some
         with
