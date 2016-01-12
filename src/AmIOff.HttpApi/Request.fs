@@ -280,7 +280,7 @@ module Timesheet =
                         if resident.first = "Delphine" then
                             printfn "%s %d EndTimeKind: %A" resident.first id endTime.Kind
                             printfn "%s %d EndTime: %A" resident.first id endTime
-                        time <= endTime
+                        time < endTime
                     | None -> false
                 if resident.first = "Delphine" then
                     printfn "%s %d IsAfterStart: %A" resident.first id isAfterStart
