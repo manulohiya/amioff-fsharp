@@ -198,12 +198,6 @@ module ScheduleItem =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Resident = 
 
-    type private JsonResident = 
-        {
-            first : string
-            last : string
-        }
-
     let tryCreate (name : string) id : Resident option=
         try
             let names = name.Split ','
