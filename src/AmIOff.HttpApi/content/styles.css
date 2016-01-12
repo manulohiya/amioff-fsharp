@@ -35,11 +35,7 @@ body {
   z-index: 0;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-  
-    vertical-align: middle;
 
-}
 
 select {
     width: 80px !important;

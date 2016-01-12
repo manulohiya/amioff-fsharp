@@ -191,7 +191,7 @@ module ScheduleItem =
             let isBeforeEnd = 
                 scheduleItem
                 |> tryEndTime offset
-                |> Option.exists (fun endTime -> time <= endTime)
+                |> Option.exists (fun endTime -> time < endTime)
             isAfterStart && isBeforeEnd)
 
 [<RequireQualifiedAccess>]
@@ -218,7 +218,13 @@ module Resident =
     let toJson (resident : Resident) = 
         let first = resident.first
         let last = resident.last
-        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"timeFreeUntil\":\"\"}" first last
+
+    let toJsonUntil (resident : Resident) (until : System.DateTime) = 
+        let first = resident.first
+        let last = resident.last
+        let unix = (until - (new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local))).TotalSeconds
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"timeFreeUntil\":%d}" first last (int unix)
 
     let hasParenthesis resident = 
         let hasParens (str : string) = 
@@ -250,7 +256,7 @@ module Timesheet =
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
             |> fun result -> 
-                (Timesheet.Parse result, int offset)
+                (Timesheet.Parse result, - int offset) // , offset)
             |> Some
         with
             exn -> 
@@ -307,4 +313,4 @@ module Timesheet =
                 |> ScheduleItem.tryEndTime offset 
                 |> Option.exists (fun t -> timeFree > t))
             |> Option.bind (fun i -> Seq.tryItem (i + 1) shifts)
-        |> Option.map (ScheduleItem.tryStartTime offset)
+        |> Option.bind (ScheduleItem.tryStartTime offset)
