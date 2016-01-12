@@ -198,7 +198,7 @@ module Timesheet =
             |> String.concat "\n"
             |> sprintf "%s\n%s" csvHeader
             |> fun result -> 
-                (Timesheet.Parse result, int offset) // , offset)
+                (Timesheet.Parse result, - int offset) // , offset)
             |> Some
         with
             exn -> 
