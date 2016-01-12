@@ -220,14 +220,14 @@ module Resident =
         let last = resident.last
         sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
 
-    let ignoreWithParenthesis (residents : Resident list) = 
-        let hasParenthesis (str : string) = 
-            str.Contains ("(") || str.Contains(")")
-        residents
-        |> List.filter (fun resident -> 
-            let first = resident.first
-            let last = resident.last
-            not (hasParenthesis first || hasParenthesis last))
+    let hasParenthesis resident = 
+        let hasParens (str : string) = 
+            str.Contains("(") || str.Contains(")")
+        let first = resident.first
+        let last = resident.last
+        not (hasParens first || hasParens last)
+
+    let ignoreWithParenthesis = List.filter hasParenthesis
 
     let isBusy time offset scheduleItem resident =
         ScheduleItem.isBusy time offset scheduleItem && scheduleItem.``Staff name - unique ID`` = resident.id 
