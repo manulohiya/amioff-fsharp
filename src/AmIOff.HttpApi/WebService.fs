@@ -29,6 +29,7 @@ module Service =
                 match Timesheet.tryMapAmionResponseToCsv 5 raw with // 5 is the size of header from api
                 | Some (timesheet, offset) -> 
                     let residents = Timesheet.toResidents timesheet |> Resident.ignoreWithParenthesis
+                    let time = if time.Month <= 6 then time.AddYears 1 else time //HACK: API expects academic year, so we have to convert back to calendar year for processing timesheet
                     let freeResidents = Timesheet.freeResidents residents time offset timesheet
                     let freeResidentsAsJSON = 
                         let joined = 
