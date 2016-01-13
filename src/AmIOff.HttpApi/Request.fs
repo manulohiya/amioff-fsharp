@@ -311,10 +311,14 @@ module Timesheet =
             with
                 | _ -> None
         else 
-            shifts
-            |> Seq.tryFindIndex (fun scheduleItem -> 
-                scheduleItem 
-                |> ScheduleItem.tryEndTime offset 
-                |> Option.exists (fun t -> timeFree > t))
+            try 
+                shifts
+                |> Seq.findIndex (fun scheduleItem -> 
+                    scheduleItem 
+                    |> ScheduleItem.tryEndTime offset 
+                    |> Option.exists (fun t -> timeFree > t))
+                |> Some
+            with
+            | exn -> None
             |> Option.bind (fun i -> Seq.tryItem (i + 1) shifts)
         |> Option.bind (ScheduleItem.tryStartTime offset)
