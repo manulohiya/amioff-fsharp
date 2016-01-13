@@ -66,7 +66,7 @@ $("#program-search").submit(function(event) {
 	var $timeZone = $('#timeZone :selected').text();
 	var dateTimeZone = $date+" "+$time+" "+$timeZone;
 
-	var timeObject = {time : $time, date : $date, timeZone : $timeZone, programName: $programName }
+	var timeObject = {time : $time, calendarDate : $calendarDate, timeZone : $timeZone, programName: $programName }
 	var $inputTime = $(_heading(timeObject));
 	 // $inputTime.attr('data-index', index);
 	 $heading.append($inputTime);
@@ -109,7 +109,7 @@ $("#program-search").submit(function(event) {
 	  		_.each(data, function (name, index) {
 	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
 	  			var time = moment.unix(name.timeFreeUntil).format("h:mm a")
-	  			console.log("NAME: " + name.firstName)
+	  			console.log("Date: " + name.date)
 	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time}
 	  			var $name = $(_results(nameObject));
 	  			$name.attr('data-index', index);
