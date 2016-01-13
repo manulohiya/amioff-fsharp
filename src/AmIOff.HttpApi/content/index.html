@@ -109,7 +109,7 @@
 
 				<div class="col-sm-6">
 					<left>
-						<h2> Here's who is OFF</h2>
+						
 						<h2 id="heading"></h2>
 						<div id="results"></div>
 
@@ -159,6 +159,16 @@
 
 <!-- app.JS -->
 <script type="text/javascript" src="app.js"></script> 
+
+<!-- underscore template -->
+  <script type="text/template" id="heading-template">  
+  	<div class="heading">
+  	 	            
+          Here's who is OFF at <%= time %> <%=timeZone %>, <%= date %> at <%= programName %> 
+        
+      	
+    </div>       
+  </script>
 
 <!-- underscore template -->
   <script type="text/template" id="results-template">  

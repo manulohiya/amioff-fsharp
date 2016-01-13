@@ -7,6 +7,8 @@ $(function(){
 var $results = $('#results');
 var _results = _.template($('#results-template').html());
 
+var $heading = $('#heading');
+var _heading = _.template($('#heading-template').html());
 
 // On page load
 $("#datepicker" ).datepicker({ 
@@ -54,12 +56,20 @@ $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
 	event.preventDefault();
 	
+	
+
+
 	var $programName = $('#program-name').val();
 	var $calendarDate = $('#datepicker').val();
 	var $date = dateChecker($calendarDate);
 	var $time = $('#timepicker').val();
 	var $timeZone = $('#timeZone :selected').text();
 	var dateTimeZone = $date+" "+$time+" "+$timeZone;
+
+	var timeObject = {time : $time, date : $date, timeZone : $timeZone, programName: $programName }
+	var $inputTime = $(_heading(timeObject));
+	 // $inputTime.attr('data-index', index);
+	 $heading.append($inputTime);
 	
 	// var value = $('#dropDownId:selected').text()
 	// var currentTime = $('#date').val();
