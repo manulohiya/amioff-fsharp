@@ -97,7 +97,11 @@ $("#program-search").submit(function(event) {
 	  		console.log("NAMES: " + data)	
 	  		
 	  		_.each(data, function (name, index) {
-	  			var $name = $(_results(name));
+	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
+	  			var time = moment.unix(name.timeFreeUntil).format("h:mm a")
+	  			console.log("NAME: " + name.firstName)
+	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time}
+	  			var $name = $(_results(nameObject));
 	  			$name.attr('data-index', index);
 	  			$results.append($name);
 	  		});
