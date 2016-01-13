@@ -33,15 +33,13 @@ module Service =
                     let freeResidents = 
                         Timesheet.freeResidents residents time offset timesheet
                         |> List.map (fun resident -> 
-                            let maybeFreeUntil = Timesheet.residentsFreeUntil resident time offset timesheet
-                            (resident, maybeFreeUntil))
+                            let freeUntil = Timesheet.residentsFreeUntil resident time offset timesheet
+                            (resident, freeUntil))
                     let freeResidentsAsJSON = 
                         let joined = 
                             freeResidents 
-                            |> List.map (fun (resident, maybeFreeUntil) -> 
-                                match maybeFreeUntil with
-                                | Some freeUntil -> Resident.toJsonUntil resident freeUntil
-                                | None -> Resident.toJson resident)
+                            |> List.map (fun (resident, freeUntil) -> 
+                                Resident.toJsonUntil resident freeUntil)
                             |> String.concat ","
                         sprintf "[%s]" joined
                     printfn "Returning JSON: %s" freeResidentsAsJSON

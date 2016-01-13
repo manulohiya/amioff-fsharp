@@ -289,36 +289,16 @@ module Timesheet =
         |> List.sortBy (fun resident -> resident.first)
 
     let residentsFreeUntil resident timeFree offset (timesheet : Timesheet) = 
-        let shifts = 
+        try 
             timesheet.Rows 
             |> Seq.filter (fun scheduleItem -> 
-                scheduleItem.``Staff name - unique ID`` = resident.id) //TODO: Make sure timesheet is sorted
-        let isBeforeFirst = 
-            try 
-                timesheet.Rows
-                |> Seq.head
-                |> ScheduleItem.tryStartTime offset 
-                |> Option.exists (fun t -> timeFree < t)
-            with
-                | _ -> 
-                    printfn "Timesheet is empty ?"
-                    false
-        if isBeforeFirst then
-            try 
-                timesheet.Rows 
-                |> Seq.head
-                |> Some
-            with
-                | _ -> None
-        else 
-            try 
-                shifts
-                |> Seq.findIndex (fun scheduleItem -> 
-                    scheduleItem 
-                    |> ScheduleItem.tryEndTime offset 
-                    |> Option.exists (fun t -> timeFree > t))
-                |> Some
-            with
-            | exn -> None
-            |> Option.bind (fun i -> try Seq.nth (i+1) shifts |> Some with _ -> None)
-        |> Option.bind (ScheduleItem.tryStartTime offset)
+                scheduleItem.``Staff name - unique ID`` = resident.id) //TODO: Make sure timesheet is sorted 
+            |> Seq.choose (ScheduleItem.tryStartTime offset) 
+            |> Seq.map (fun startTime -> (startTime - timeFree, startTime))
+            |> Seq.filter ((<) (System.TimeSpan(0L)) << fst)
+            |> Seq.minBy fst
+            |> snd
+        with
+        | exn -> 
+            //TODO: If the user is free till the end of the month, then say the user is free until the first of the folloing month
+            (new System.DateTime(timeFree.Year, timeFree.Month, 1)).AddMonths(1)
