@@ -320,5 +320,5 @@ module Timesheet =
                 |> Some
             with
             | exn -> None
-            |> Option.bind (fun i -> try Seq.item (i + 1) shifts |> Some with _ -> None)
+            |> Option.bind (fun i -> try Seq.nth (i+1) shifts |> Some with _ -> None)
         |> Option.bind (ScheduleItem.tryStartTime offset)
