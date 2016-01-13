@@ -304,8 +304,12 @@ module Timesheet =
                     printfn "Timesheet is empty ?"
                     false
         if isBeforeFirst then
-            timesheet.Rows 
-            |> Seq.tryHead
+            try 
+                timesheet.Rows 
+                |> Seq.head
+                |> Some
+            with
+                | _ -> None
         else 
             shifts
             |> Seq.tryFindIndex (fun scheduleItem -> 
