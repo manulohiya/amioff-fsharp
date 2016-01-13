@@ -138,15 +138,65 @@ module Request =
                 http
         Http.AsyncRequestString(baseUrl, query = query, httpMethod = "GET", customizeHttpRequest = logging)
 
+
+[<RequireQualifiedAccess>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module ScheduleItem =
+
+    let private mapToHour n = 
+        let hour = n / 100
+        let minute = n % 100
+        if minute < 0 || minute >= 60 then 
+            printfn "Could not create (minute, hour) from %d" n
+            None
+        else
+            Some (hour, minute)
+
+    let private addToDateTime (date : System.DateTime) (hour, minute) = 
+        date
+            .AddHours(float hour)
+            .AddMinutes(float minute)
+
+    let private maybeTime f (scheduleItem : ScheduleItem) = 
+        let assignmentDate = scheduleItem.``Date of assignment``
+        scheduleItem
+        |> f
+        |> mapToHour 
+        |> Option.map (addToDateTime assignmentDate)
+
+    let internal tryStartTime offset scheduleItem = 
+        scheduleItem
+        |> maybeTime (fun scheduleItem -> 
+            scheduleItem.``Time of assignment Start``)
+        |> Option.map (fun date -> date.AddHours (float offset))
+
+    let internal tryEndTime offset scheduleItem = 
+        scheduleItem 
+        |> tryStartTime offset
+        |> Option.bind (fun startTime -> 
+            scheduleItem
+            |> maybeTime (fun scheduleItem ->
+                scheduleItem.``Time of assignment End``)
+            |> Option.map (fun endTime -> 
+                let endTime = endTime.AddHours (float offset)
+                if startTime > endTime then
+                    endTime.AddDays(1.)
+                else endTime))
+
+    let isBusy (time : System.DateTime) offset (scheduleItem : ScheduleItem) = 
+        scheduleItem 
+        |> tryStartTime offset
+        |> Option.exists (fun startTime ->
+            let isAfterStart = startTime <= time
+            let isBeforeEnd = 
+                scheduleItem
+                |> tryEndTime offset
+                |> Option.exists (fun endTime -> time < endTime)
+            isAfterStart && isBeforeEnd)
+
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Resident = 
-
-    type private JsonResident = 
-        {
-            first : string
-            last : string
-        }
 
     let tryCreate (name : string) id : Resident option=
         try
@@ -168,16 +218,25 @@ module Resident =
     let toJson (resident : Resident) = 
         let first = resident.first
         let last = resident.last
-        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\"}" first last
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"timeFreeUntil\":\"\"}" first last
 
-    let ignoreWithParenthesis (residents : Resident list) = 
-        let hasParenthesis (str : string) = 
-            str.Contains ("(") || str.Contains(")")
-        residents
-        |> List.filter (fun resident -> 
-            let first = resident.first
-            let last = resident.last
-            not (hasParenthesis first || hasParenthesis last))
+    let toJsonUntil (resident : Resident) (until : System.DateTime) = 
+        let first = resident.first
+        let last = resident.last
+        let unix = (until - (new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local))).TotalSeconds
+        sprintf "{\"firstName\":\"%s\",\"lastName\":\"%s\",\"timeFreeUntil\":%d}" first last (int unix)
+
+    let hasParenthesis resident = 
+        let hasParens (str : string) = 
+            str.Contains("(") || str.Contains(")")
+        let first = resident.first
+        let last = resident.last
+        not (hasParens first || hasParens last)
+
+    let ignoreWithParenthesis = List.filter hasParenthesis
+
+    let isBusy time offset scheduleItem resident =
+        ScheduleItem.isBusy time offset scheduleItem && scheduleItem.``Staff name - unique ID`` = resident.id 
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -192,7 +251,6 @@ module Timesheet =
                     .Groups
                     .Item(0)
                     .Value
-            printfn "Offset: %A" offset
             rawAmionResp.Split '\n'
             |> fun x -> x.[headerLines..]
             |> String.concat "\n"
@@ -217,78 +275,42 @@ module Timesheet =
         |> List.ofSeq
         |> List.choose ((<||) Resident.tryCreate)
 
-    let internal mapToHour n = 
-        let hour = n / 100
-        let minute = n % 100
-        if minute < 0 || minute >= 60 then 
-            printfn "Could not create (minute, hour) from %d" n
-            None
-        else
-            Some (hour, minute)
-
-    let internal addToDateTime (date : System.DateTime) (hour, minute) = 
-        date
-            .AddHours(float hour)
-            .AddMinutes(float minute)
-    
-    let private maybeTime f (scheduleItem : ScheduleItem) = 
-        let assignmentDate = scheduleItem.``Date of assignment``
-        scheduleItem
-        |> f
-        |> mapToHour 
-        |> Option.map (addToDateTime assignmentDate)
-
-    let internal maybeStartTime offset scheduleItem = 
-        scheduleItem
-        |> maybeTime (fun scheduleItem -> 
-            scheduleItem.``Time of assignment Start``)
-        |> Option.map (fun date -> date.AddHours (float offset))
-//        |> Option.map (fun time -> 
-//            System.TimeZoneInfo.ConvertTime(time, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime())
-
-    let internal maybeEndTime offset startTime = 
-        maybeTime (fun scheduleItem ->
-            scheduleItem.``Time of assignment End``)
-        >> Option.map (fun endTime -> 
-//            let endTime = System.TimeZoneInfo.ConvertTime(endTime, System.TimeZoneInfo.FindSystemTimeZoneById("US/Pacific")).ToUniversalTime()
-            let endTime = endTime.AddHours (float offset)
-            if startTime > endTime then
-                endTime.AddDays(1.)
-            else endTime)
-
     let residentIsBusy (resident : Resident) (time : System.DateTime) offset (timesheet : Timesheet) = 
         timesheet.Rows 
-        |> Seq.filter (fun scheduleItem -> scheduleItem.``Staff name - unique ID`` = resident.id)
-        |> Seq.exists (fun scheduleItem ->
-            scheduleItem 
-            |> maybeStartTime offset
-            |> Option.exists (fun startTime ->
-                let id = hash scheduleItem
-                if resident.first = "Delphine" then
-                    printfn "RESIDENT: %s %s" resident.first resident.last
-                    printfn "%s %d StartTime: %A" resident.first id startTime
-                    printfn "%s %d Input Time: %A" resident.first id time 
-                    printfn "%s %d Input TimeKind: %A" resident.first id time.Kind
-                    printfn "%s %d StartTimeKind: %A" resident.first id startTime.Kind
-                let isAfterStart = startTime <= time
-                let isBeforeEnd = 
-                    let maybeEndTime = 
-                        scheduleItem
-                        |> maybeEndTime offset startTime
-                    match maybeEndTime with
-                    | Some endTime -> 
-                        if resident.first = "Delphine" then
-                            printfn "%s %d EndTimeKind: %A" resident.first id endTime.Kind
-                            printfn "%s %d EndTime: %A" resident.first id endTime
-                        time < endTime
-                    | None -> false
-                if resident.first = "Delphine" then
-                    printfn "%s %d IsAfterStart: %A" resident.first id isAfterStart
-                    printfn "%s %d isBeforEnd: %A" resident.first id isBeforeEnd
-                isAfterStart && isBeforeEnd))
+        |> Seq.filter (fun scheduleItem -> 
+            scheduleItem.``Staff name - unique ID`` = resident.id)
+        |> Seq.exists (fun scheduleItem -> 
+            Resident.isBusy time offset scheduleItem resident)
 
     let freeResidents residents time offset timesheet = 
         residents
         |> List.filter (fun (resident : Resident) -> 
             not (residentIsBusy resident time offset timesheet))
         |> List.sortBy (fun resident -> resident.first)
+
+    let residentsFreeUntil resident timeFree offset (timesheet : Timesheet) = 
+        let shifts = 
+            timesheet.Rows 
+            |> Seq.filter (fun scheduleItem -> 
+                scheduleItem.``Staff name - unique ID`` = resident.id) //TODO: Make sure timesheet is sorted
+        let isBeforeFirst = 
+            try 
+                timesheet.Rows
+                |> Seq.head
+                |> ScheduleItem.tryStartTime offset 
+                |> Option.exists (fun t -> timeFree < t)
+            with
+                | _ -> 
+                    printfn "Timesheet is empty ?"
+                    false
+        if isBeforeFirst then
+            timesheet.Rows 
+            |> Seq.tryHead
+        else 
+            shifts
+            |> Seq.tryFindIndex (fun scheduleItem -> 
+                scheduleItem 
+                |> ScheduleItem.tryEndTime offset 
+                |> Option.exists (fun t -> timeFree > t))
+            |> Option.bind (fun i -> Seq.tryItem (i + 1) shifts)
+        |> Option.bind (ScheduleItem.tryStartTime offset)
