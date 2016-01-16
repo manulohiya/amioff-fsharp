@@ -54,6 +54,7 @@ var dateChecker = function(date) {
 // On submit button
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
+	$heading.empty();
 	event.preventDefault();
 	
 	
