@@ -112,12 +112,12 @@
 						
 						<div id="heading"></div>
 						<br>
-						<div id="heading-on"></div>
+						<div id="heading-on"><h3>Residents on On-rotation</h3></div>
 						<div id="results-on"></div>
 						<br>
 						
 						<br>
-						<div id="heading-off"></div>
+						<div id="heading-off"><h3>Residents on Off-rotation</h3></div>
 						<div id="results-off"></div>
 
 					</left>
@@ -182,10 +182,9 @@
   	<div class="heading">
   	 	            
          <h2> Here's who is not on shift at <%= time %> <%=timeZone %>, <%= calendarDate %> at <%= programName %> </h2>
-         <p style="color:green;"> GREEN = Residents who are on-schedule </p>
-          <p style="color:red;"> RED = Residents who are off-schedule </p>
+        
 
-          <i><p> All results below are based on data from AMION and are in your machine's local time.</p></i>       
+          <i><p> All results below are based on public data from AMION's API. The times listed below are in your machine's local time.</p></i>       
       	
     </div>       
   </script>
@@ -193,32 +192,19 @@
 
 
 
-<script type="text/template" id="headingOn-template">  
-  	<div class="heading">
-  	 	            
-         <h3> Resident's on-schedule/on-block: </h3>
-                   	
-    </div>       
-</script>
+
 
   <script type="text/template" id="resultsOn-template">  
   	<div class="results">
   	 	  
         	<% if (offScheduleFlag == false) {    %> 
-        		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= time %>, <%= date %>  </li>
+        		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= time %> on <%= date %>  </li>
         	<% } %>
 
      </div>       
   </script>
 
 
-	<script type="text/template" id="headingOff-template">  
-  	<div class="heading">
-  	 	            
-         <h3> Resident's off-schedule/off-block: </h3>
-                   	
-    </div>       
-  </script>
 
 <!-- underscore template -->
   <script type="text/template" id="resultsOff-template">  

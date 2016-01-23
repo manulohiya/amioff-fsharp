@@ -14,11 +14,6 @@ var _resultsOff = _.template($('#resultsOff-template').html());
 var $heading = $('#heading');
 var _heading = _.template($('#heading-template').html());
 
-var $headingOn = $('#heading-on');
-var _headingOn = _.template($('#headingOn-template').html());
-
-var $headingOff = $('#heading-off');
-var _headingOff = _.template($('#headingOff-template').html());
 
 
 // On page load
@@ -32,6 +27,9 @@ $('#timepicker').timepicker({
 	disableTouchKeyboard: true
 
 });
+
+$('#heading-on').hide();
+$('#heading-off').hide();
 
   // Retrieve the users program-name
   var name = localStorage.getItem('program-name');
@@ -80,8 +78,7 @@ var dateChecker = function(date) {
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
 	$heading.empty();
-	$headingOn.empty();
-	$headingOff.empty();
+	
 	$resultsOn.empty();
 	$resultsOff.empty();
 	event.preventDefault();
@@ -136,7 +133,7 @@ $("#program-search").submit(function(event) {
 	  		var endOfMonth = [1454284800, 1456790400, 1459382400, 1462060800, 1464739200, 1467331200];
 	  		
 	  		_.each(data, function (name, index) {
-	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
+	  			var date = moment.unix(name.timeFreeUntil).format("Do MMMM (dddd)")
 	  			var time = moment.unix(name.timeFreeUntil).format("h a")
 	  			
 
@@ -149,9 +146,11 @@ $("#program-search").submit(function(event) {
 	  			$name1.attr('data-index', index);
 	  			var $name2 = $(_resultsOff(nameObject));
 	  			$name2.attr('data-index', index);
-	  			$headingOn.append($name1);
+	  			
+	  			$('#heading-on').show();
+
 	  			$resultsOn.append($name1);
-	  			$headingOff.append($name2);
+	  			$('#heading-off').show();
 	  			$resultsOff.append($name2);
 	  		});
 	  		
