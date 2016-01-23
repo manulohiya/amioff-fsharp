@@ -3,9 +3,13 @@ $(function(){
 	console.log("JS is ready!")
 
 
-// results template
-var $results = $('#results');
-var _results = _.template($('#results-template').html());
+// results templates
+var $resultsOn = $('#results-on');
+var _resultsOn = _.template($('#resultsOn-template').html());
+
+var $resultsOff = $('#results-off');
+var _resultsOff = _.template($('#resultsOff-template').html());
+
 
 var $heading = $('#heading');
 var _heading = _.template($('#heading-template').html());
@@ -112,7 +116,7 @@ $("#program-search").submit(function(event) {
 
 	$.get('/api/'+$programName+'/'+unixtime,
 	  	function(data) {
-	  		$results.empty();
+	  		$resultsOn.empty();
 	  		// var names = [
 	  		// {firstName: "Manu", lastName: "Lohiya"},
 	  		// {firstName: "Neil", lastName: "Maheshwari"}
@@ -133,9 +137,12 @@ $("#program-search").submit(function(event) {
 	  			
 	  			
 	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time, offScheduleFlag: offScheduleFlag}
-	  			var $name = $(_results(nameObject));
-	  			$name.attr('data-index', index);
-	  			$results.append($name);
+	  			var $name1 = $(_resultsOn(nameObject));
+	  			$name1.attr('data-index', index);
+	  			var $name2 = $(_resultsOff(nameObject));
+	  			$name2.attr('data-index', index);
+	  			$resultsOn.append($name1);
+	  			$resultsOff.append($name2);
 	  		});
 	  		
 	

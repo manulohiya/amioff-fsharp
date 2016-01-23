@@ -45,3 +45,12 @@ select {
 #date {
   min-width: 100px;
 }
+
+.li off {
+  color: red;
+}
+
+.li on {
+  color: green;
+}
+
