@@ -32,9 +32,13 @@ $('#timepicker').timepicker({
     $("#program-name").val(name);
   } else {
 
-    $("#program-name").val("e.g. UCSFEM");
+    $("#program-name").val("e.g. UCSFEMx`");
   }
 
+
+	function isInArray(value, array) {
+  		return array.indexOf(value) > -1;
+	}
 
 var dateChecker = function(date) {
 	console.log("dateChecker function is working")
@@ -116,12 +120,19 @@ $("#program-search").submit(function(event) {
 	  		// ];
 	  		
 	  		console.log("Sample data being returned by server[0]: " , data[0])	
+
+	  		var endOfMonth = [1454284800, 1456790400, 1459382400, 1462060800, 1464739200, 1467331200];
 	  		
 	  		_.each(data, function (name, index) {
 	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
 	  			var time = moment.unix(name.timeFreeUntil).format("h a")
+	  			
 
-	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time}
+
+	  			var offScheduleFlag = isInArray(name.timeFreeUntil, endOfMonth);
+	  			
+	  			
+	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time, offScheduleFlag: offScheduleFlag}
 	  			var $name = $(_results(nameObject));
 	  			$name.attr('data-index', index);
 	  			$results.append($name);

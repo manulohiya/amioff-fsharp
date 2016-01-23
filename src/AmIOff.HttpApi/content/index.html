@@ -186,9 +186,14 @@
 <!-- underscore template -->
   <script type="text/template" id="results-template">  
   	<div class="results">
-  	 	            
-          <li> <%= firstName %>  <%= lastName %>, free until <%= time %>, <%= date %>  </li>
-        
+  	 	  <% if (offScheduleFlag == true) {    %>     
+          <li style="color:red;"> <%= firstName %>  <%= lastName %> is off-rotation this month  </li>
+        	
+        	<% } else { %>
+        		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= time %>, <%= date %>  </li>
+        	<% } %>
+
+       
       	
     </div>       
   </script>
