@@ -76,6 +76,8 @@ var dateChecker = function(date) {
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
 	$heading.empty();
+	$resultsOn.empty();
+	$resultsOff.empty();
 	event.preventDefault();
 	
 	
@@ -116,7 +118,7 @@ $("#program-search").submit(function(event) {
 
 	$.get('/api/'+$programName+'/'+unixtime,
 	  	function(data) {
-	  		$resultsOn.empty();
+
 	  		// var names = [
 	  		// {firstName: "Manu", lastName: "Lohiya"},
 	  		// {firstName: "Neil", lastName: "Maheshwari"}
