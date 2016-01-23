@@ -10,6 +10,9 @@ var _results = _.template($('#results-template').html());
 var $heading = $('#heading');
 var _heading = _.template($('#heading-template').html());
 
+
+
+
 // On page load
 $("#datepicker" ).datepicker({ 
 	minDate: 0, 
@@ -21,6 +24,16 @@ $('#timepicker').timepicker({
 	disableTouchKeyboard: true
 
 });
+
+  // Retrieve the users program-name
+  var name = localStorage.getItem('program-name');
+  console.log("program-name: ", name)
+  if (name != "undefined" || name != "null") {
+    $("#program-name").val(name);
+  } else {
+
+    $("#program-name").val("e.g. UCSFEM");
+  }
 
 
 var dateChecker = function(date) {
@@ -78,9 +91,9 @@ $("#program-search").submit(function(event) {
 	console.log("Program Name: "+$programName)
 	console.log("Date with timezone: "+dateTimeZone)
 
-
-
-
+	localStorage.setItem("program-name", $programName);
+	var storedValue = localStorage.getItem("program-name");
+	console.log(storedValue);
 	// Pick either the date from form. If no date entered, select current time
 	
 	var unixtime = Date.parse(dateTimeZone).getTime()/1000; 
