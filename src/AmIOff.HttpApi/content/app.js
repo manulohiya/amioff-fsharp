@@ -76,9 +76,6 @@ $("#program-search").submit(function(event) {
 	// var currentTime = $('#date').val();
 	
 	console.log("Program Name: "+$programName)
-	console.log("Date: "+$date)
-	console.log("Time: "+$time)
-	console.log("TimeZone: "+$timeZone)
 	console.log("Date with timezone: "+dateTimeZone)
 
 
@@ -105,7 +102,7 @@ $("#program-search").submit(function(event) {
 
 	  		// ];
 	  		
-	  		console.log("NAMES: " , data)	
+	  		console.log("Sample data being returned by server[0]: " , data[0])	
 	  		
 	  		_.each(data, function (name, index) {
 	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
@@ -116,7 +113,8 @@ $("#program-search").submit(function(event) {
 	  			$name.attr('data-index', index);
 	  			$results.append($name);
 	  		});
-
+	  		
+	
 		}	
 	);
 
