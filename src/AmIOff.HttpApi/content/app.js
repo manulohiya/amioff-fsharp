@@ -3,17 +3,24 @@ $(function(){
 	console.log("JS is ready!")
 
 
-// results template
-var $results = $('#results');
-var _results = _.template($('#results-template').html());
+// results templates
+var $resultsOn = $('#results-on');
+var _resultsOn = _.template($('#resultsOn-template').html());
+
+var $resultsOff = $('#results-off');
+var _resultsOff = _.template($('#resultsOff-template').html());
+
 
 var $heading = $('#heading');
 var _heading = _.template($('#heading-template').html());
 
+
+
+
 // On page load
 $("#datepicker" ).datepicker({ 
-	minDate: -60, 
-	maxDate: 60 
+	minDate: 0, 
+	maxDate: 30 
 });
 
 $('#timepicker').timepicker({
@@ -22,6 +29,20 @@ $('#timepicker').timepicker({
 
 });
 
+  // Retrieve the users program-name
+  var name = localStorage.getItem('program-name');
+  console.log("program-name: ", name)
+  if (name != "undefined" || name != "null") {
+    $("#program-name").val(name);
+  } else {
+
+    $("#program-name").val("e.g. UCSFEMx`");
+  }
+
+
+	function isInArray(value, array) {
+  		return array.indexOf(value) > -1;
+	}
 
 var dateChecker = function(date) {
 	console.log("dateChecker function is working")
@@ -76,19 +97,16 @@ $("#program-search").submit(function(event) {
 	// var currentTime = $('#date').val();
 	
 	console.log("Program Name: "+$programName)
-	console.log("Date: "+$date)
-	console.log("Time: "+$time)
-	console.log("TimeZone: "+$timeZone)
 	console.log("Date with timezone: "+dateTimeZone)
 
-
-
-
+	localStorage.setItem("program-name", $programName);
+	var storedValue = localStorage.getItem("program-name");
+	console.log(storedValue);
 	// Pick either the date from form. If no date entered, select current time
 	
 	var unixtime = Date.parse(dateTimeZone).getTime()/1000; 
 
-	console.log("Unix-timezone: "+unixtime)
+	console.log("Unix-timezone being sent to server: "+unixtime)
 	
 	
 	
@@ -98,25 +116,36 @@ $("#program-search").submit(function(event) {
 
 	$.get('/api/'+$programName+'/'+unixtime,
 	  	function(data) {
-	  		$results.empty();
+	  		$resultsOn.empty();
 	  		// var names = [
 	  		// {firstName: "Manu", lastName: "Lohiya"},
 	  		// {firstName: "Neil", lastName: "Maheshwari"}
 
 	  		// ];
 	  		
-	  		console.log("NAMES: " + data)	
+	  		console.log("Sample data being returned by server[0]: " , data[0])	
+
+	  		var endOfMonth = [1454284800, 1456790400, 1459382400, 1462060800, 1464739200, 1467331200];
 	  		
 	  		_.each(data, function (name, index) {
 	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
-	  			var time = moment.unix(name.timeFreeUntil).format("h:mm a")
-	  			console.log("Date: " + name.date)
-	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time}
-	  			var $name = $(_results(nameObject));
-	  			$name.attr('data-index', index);
-	  			$results.append($name);
-	  		});
+	  			var time = moment.unix(name.timeFreeUntil).format("h a")
+	  			
 
+
+	  			var offScheduleFlag = isInArray(name.timeFreeUntil, endOfMonth);
+	  			
+	  			
+	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time, offScheduleFlag: offScheduleFlag}
+	  			var $name1 = $(_resultsOn(nameObject));
+	  			$name1.attr('data-index', index);
+	  			var $name2 = $(_resultsOff(nameObject));
+	  			$name2.attr('data-index', index);
+	  			$resultsOn.append($name1);
+	  			$resultsOff.append($name2);
+	  		});
+	  		
+	
 		}	
 	);
 

@@ -59,9 +59,9 @@
 			<left>
 				<br>
 				<h1>AMIOFF<h1>
-					<h3>The easiest way for medical residents to find fellow residents to hang out or swap shifts</h4>
+					<h3>The easiest way for medical residents to hang out or swap shifts with fellow residents </h3>
 			</left>
-				<img src='https://images.unsplash.com/photo-1416425243776-b8fd4dc53f50?crop=entropy&fit=crop&fm=jpg&h=750&ixjsv=2.1.0&ixlib=rb-0.3.5&q=80&w=1300'>
+				<img src="IMG_2783.jpg">
 		</div>
 	</div>
 
@@ -90,10 +90,10 @@
 						
 
 						<form class = "form-inline" id="program-search">
-						2. Program (Amion) login <br>
+						2. Program (Amion) login - case sensitive <br>
 							<div class="form-group"> 
 								
-								<input class="form-control" id="program-name" placeholder="e.g. UCSFEM" autofocus>
+								<input class="form-control" id="program-name" placeholder="e.g. UCSFEM">
 							</div>
 
 							<button type="submit" class="btn btn-success">Go</button>
@@ -110,9 +110,13 @@
 				<div class="col-sm-6">
 					<left>
 						
-						<h2 id="heading"></h2>
-						<div id="results"></div>
-
+						<div id="heading"></div>
+						
+						<div id="results-on"></div>
+						<br>
+						
+						<br>
+						<div id="results-off"> </div>
 
 					</left>
 				</div>		
@@ -175,21 +179,48 @@
   <script type="text/template" id="heading-template">  
   	<div class="heading">
   	 	            
-          Here's who is OFF at <%= time %> <%=timeZone %>, <%= calendarDate %> at <%= programName %> 
+         <h2> Here's who is not on shift at <%= time %> <%=timeZone %>, <%= calendarDate %> at <%= programName %> </h2>
+         <p style="color:green;"> GREEN = Residents who are on-schedule </p>
+          <p style="color:red;"> RED = Residents who are off-schedule </p>
+
+          <i><p> All results below are based on data from AMION and are in your machine's local time.</p></i>
+
         
       	
     </div>       
   </script>
 
 <!-- underscore template -->
-  <script type="text/template" id="results-template">  
+  <script type="text/template" id="resultsOn-template">  
   	<div class="results">
-  	 	            
-          <li> <%= firstName %>  <%= lastName %>, free until <%= time %>, <%= date %>  </li>
-        
-      	
-    </div>       
+  	 	  
+  	 	 
+
+        	<% if (offScheduleFlag == false) {    %> 
+        		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= time %>, <%= date %>  </li>
+        	<% } %>
+
+     </div>       
   </script>
+
+<!-- underscore template -->
+  <script type="text/template" id="resultsOff-template">  
+  	<div class="results">
+  	 	  
+  	 	  <% if (offScheduleFlag == true) {    %>     
+          <li style="color:red;"> <%= firstName %>  <%= lastName %> is off-rotation  </li>
+        	<% } %>
+
+        	
+
+     </div>       
+  </script>
+			
+        	
+
+       
+      	
+   
 
 
 
