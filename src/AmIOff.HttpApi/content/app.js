@@ -12,8 +12,8 @@ var _heading = _.template($('#heading-template').html());
 
 // On page load
 $("#datepicker" ).datepicker({ 
-	minDate: -60, 
-	maxDate: 60 
+	minDate: 0, 
+	maxDate: 30 
 });
 
 $('#timepicker').timepicker({
@@ -88,7 +88,7 @@ $("#program-search").submit(function(event) {
 	
 	var unixtime = Date.parse(dateTimeZone).getTime()/1000; 
 
-	console.log("Unix-timezone: "+unixtime)
+	console.log("Unix-timezone being sent to server: "+unixtime)
 	
 	
 	
@@ -105,12 +105,12 @@ $("#program-search").submit(function(event) {
 
 	  		// ];
 	  		
-	  		console.log("NAMES: " + data)	
+	  		console.log("NAMES: " , data)	
 	  		
 	  		_.each(data, function (name, index) {
 	  			var date = moment.unix(name.timeFreeUntil).format("MM/DD/YYYY")
-	  			var time = moment.unix(name.timeFreeUntil).format("h:mm a")
-	  			console.log("Date: " + name.date)
+	  			var time = moment.unix(name.timeFreeUntil).format("h a")
+
 	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time}
 	  			var $name = $(_results(nameObject));
 	  			$name.attr('data-index', index);
