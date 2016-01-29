@@ -9,10 +9,10 @@ body {
   height: 300px;
 }
 
-.jumbotron h1, h4 {
+.jumbotron h1, h3 {
   
   z-index: 2;
-  
+  padding-left: 10%;
   
  
 
