@@ -133,7 +133,7 @@ $("#program-search").submit(function(event) {
 	  		var endOfMonth = [1454284800, 1456790400, 1459382400, 1462060800, 1464739200, 1467331200];
 	  		
 	  		_.each(data, function (name, index) {
-	  			var date = moment.unix(name.timeFreeUntil).format("Do MMMM (dddd)")
+	  			var date = moment.unix(name.timeFreeUntil).format("M/D  (ddd)")
 	  			var time = moment.unix(name.timeFreeUntil).format("h a")
 	  			
 
