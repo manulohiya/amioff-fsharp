@@ -77,7 +77,7 @@ module Service =
 
     let swapStub (r : HttpRequest) = 
         logger.Info <| sprintf "Swap Query: %s" r.rawQuery
-        let staffType = r ^^ "staffType" |> Option.fold (fun _ s -> s) "UCSFEM-R1"
+        let staffType = r ^^! "staffType"
         let delphine = {id = 1; firstName = "Delphine"; lastName = "Huang"; staffType = staffType} 
         let programName = r ^^! "programName"
         let start = int64(r ^^! "startTime")
