@@ -71,13 +71,24 @@
 
 	<div class="container">
 		<div class="row">		
-			<div class="col-sm-6">
+			<div class="col-sm-4">
 				<left>
-
-					<h2> Pick a time </h2>
-
 					<div class="well">
-					1. Pick Date & Time
+
+					<form class = "form-inline" id="program-search">
+					<p>
+					1. Amion login (case sensitive) <br>
+						<div class="form-group"> 
+							
+							<input class="form-control" id="program-name" placeholder="e.g. UCSFEM">
+						</div>
+
+					</p>
+					<br>	
+					
+
+					
+					2. Pick Date & Time
 
 					<p>Date: <input type="text" id="datepicker"></p>
 					<p>Time: <input type="text" id="timepicker"></p>
@@ -90,18 +101,33 @@
 									 
 						</select>
 					</p>
+					<br>
+
+					3. Narrow results (Optional)
+
+					<p>Staff Type:
+						<select id = "staffType" required>
+										<option value="All">All</option>
+										<option value="	
+UCSF EM R1">UCSF EM R1</option>
+									  	<option value="	
+UCSF EM R2">UCSF EM R2</option>
+									  	<option value="	
+UCSF EM R3">UCSF EM R3</option>
+<option value="	
+UCSF EM R4">UCSF EM R4</option>
+									  
+									 
+						</select>
+					</p>
 
 						
-
-						<form class = "form-inline" id="program-search">
-						2. Amion login (case sensitive) <br>
-							<div class="form-group"> 
-								
-								<input class="form-control" id="program-name" placeholder="e.g. UCSFEM">
-							</div>
-
-							<button type="submit" class="btn btn-success">Go</button>
-						</form>
+						
+						<div align = "left">
+						<button type="submit" class="btn btn-success">Go</button>
+						</div>
+					
+					</form>
 					</div>	
 				</left>
 			</div>
@@ -111,17 +137,17 @@
 
 
 
-				<div class="col-sm-6">
+				<div class="col-sm-8">
 					<left>
 						
 						<div id="heading"></div>
 						
-						<div id="heading-on"><h3>Residents on rotation</h3></div>
+						<div id="heading-on"><h3>Residents on shifts</h3></div>
 						<div id="results-on"></div>
 						<br>
 						
 						
-						<div id="heading-off"><h3>Residents on off-rotation</h3></div>
+						<div id="heading-off"><h3>Residents on vacation</h3></div>
 						<div id="results-off"></div>
 
 					</left>
@@ -193,35 +219,19 @@
     </div>       
   </script>
 
-
-
-
-
-
+<!-- underscore template -->
   <script type="text/template" id="resultsOn-template">  
   	<div class="results">
   	 	  
-        	<% if (offScheduleFlag == false) {    %> 
-        		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= time %> on <%= date %>  </li>
-        	<% } %>
-
-     </div>       
-  </script>
-
-
-
-<!-- underscore template -->
-  <script type="text/template" id="resultsOff-template">  
-  	<div class="results">
-  	 	  
-  	 	  <% if (offScheduleFlag == true) {    %>     
-          <li style="color:red;"> <%= firstName %>  <%= lastName %> is off-rotation  </li>
-        	<% } %>
-
+        	
+  		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= freeUntil %> on <%= date %>  </li>
         	
 
      </div>       
   </script>
+
+
+
 			
         	
 
