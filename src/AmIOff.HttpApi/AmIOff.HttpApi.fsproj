@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>AmIOff.HttpApi</RootNamespace>
     <AssemblyName>AmIOff.HttpApi</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>AmIOff.HttpApi</Name>
     <TargetFrameworkProfile />

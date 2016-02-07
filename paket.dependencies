@@ -1,5 +1,6 @@
 source https://nuget.org/api/v2
 
+nuget FsCheck
 nuget FSharp.Core
 nuget FSharp.Data
 nuget FSharp.Formatting
@@ -9,5 +10,6 @@ nuget NUnit.Runners ~> 2
 nuget FAKE
 nuget SourceLink.Fake
 nuget Suave
+nuget Suave.Testing
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx

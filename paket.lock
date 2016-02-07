@@ -1,7 +1,9 @@
 NUGET
-  remote: https://nuget.org/api/v2
+  remote: https://www.nuget.org/api/v2
   specs:
     FAKE (4.11.0)
+    FsCheck (2.2.4)
+      FSharp.Core (>= 3.1.2.5)
     FSharp.Compiler.Service (1.4.0.6)
     FSharp.Core (4.0.0.1)
     FSharp.Data (2.2.5)
@@ -11,6 +13,8 @@ NUGET
       FSharpVSPowerTools.Core (2.1.0)
     FSharpVSPowerTools.Core (2.1.0)
       FSharp.Compiler.Service (>= 1.4.0.6)
+    Fuchu (1.0.3)
+      FSharp.Core (>= 3.1.2.1)
     log4net (2.0.5)
     Microsoft.Bcl (1.1.10)
       Microsoft.Bcl.Build (>= 1.0.14)
@@ -25,6 +29,10 @@ NUGET
     SourceLink.Fake (1.1.0)
     Suave (0.33.0)
       FSharp.Core (>= 3.1.2.5)
+    Suave.Testing (0.33.0)
+      FSharp.Core (>= 3.1.2.5)
+      Fuchu (>= 0.6.0)
+      Suave (>= 0.33.0)
     Zlib.Portable (1.11.0) - framework: portable-net40+sl50+wp80+win80
 GITHUB
   remote: fsharp/FAKE

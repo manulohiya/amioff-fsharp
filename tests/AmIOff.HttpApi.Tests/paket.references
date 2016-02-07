@@ -1,2 +1,5 @@
 NUnit
 NUnit.Runners
+FsCheck
+Suave
+Suave.Testing
