@@ -11,11 +11,12 @@ open Suave.Http.Files
 
 module Service = 
 
-    let logger = log4net.LogManager.GetLogger("AmIOff.HttpApi.Service")
-
     let private ofUnixTime (unix : int) = 
         let dtDateTime = new System.DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Local)
+        printfn "Unix DateTime: %A" dtDateTime
+        printfn "UNIX: %d" unix
         dtDateTime.AddSeconds(float unix)
+        |> fun x -> printfn "DateTime: %A" x; x
 
     let private findFreeResidentsAsJson (login, time) (x : HttpContext) = 
         let time = ofUnixTime time
@@ -41,7 +42,7 @@ module Service =
                                 Resident.toJsonUntil resident freeUntil)
                             |> String.concat ","
                         sprintf "[%s]" joined
-                    logger.Debug <| sprintf "Returning JSON: %s" freeResidentsAsJSON
+                    printfn "Returning JSON: %s" freeResidentsAsJSON
                     return! OK freeResidentsAsJSON x
                 | None -> return! Suave.Http.RequestErrors.BAD_REQUEST "Invalid login or date" x
         }                
