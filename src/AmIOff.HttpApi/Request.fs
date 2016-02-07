@@ -70,8 +70,6 @@ module Month =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Date = 
 
-    let logger = log4net.LogManager.GetLogger(typeof<Date>)
-
     let tryCreate (day : Day) (month : Month) (year : Year) = 
         let month' = Month.toInt month
         try
@@ -80,7 +78,7 @@ module Date =
             Some <| MonthDayYear (month, day, year)
         with
             | exn -> 
-                logger.Info <| sprintf "Could not create Date: %s" exn.Message 
+                printfn "Could not create Date: %s" exn.Message 
                 None
 
     let tryCreateMonthYear (month : Month) (year : Year) = 
@@ -91,7 +89,7 @@ module Date =
             Some <| MonthYear (month, year)
         with
             | exn -> 
-                logger.Info <| sprintf "Could not create Date: %s" exn.Message
+                printfn "Could not create Date: %s" exn.Message
                 None
 
     let tryDay : Date -> Day option = function
@@ -109,8 +107,6 @@ module Date =
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Request = 
-
-    let logger = log4net.LogManager.GetLogger(typeof<Request>)
 
     let create login date = {login = login; date = date}
 
@@ -130,7 +126,7 @@ module Request =
         | Some date -> 
             ("Day", string date) :: queries
         | None -> 
-            logger.Info "Could not find date"
+            printfn "Could not find date"
             queries
 
     let fetchRaw request = 
@@ -138,7 +134,7 @@ module Request =
         let query = constructQuery request
         let logging = 
             fun (http : HttpWebRequest) -> 
-                logger.Info <| sprintf "Requesting data from: %s" http.Address.OriginalString
+                printfn "Requesting data from: %s" http.Address.OriginalString
                 http
         Http.AsyncRequestString(baseUrl, query = query, httpMethod = "GET", customizeHttpRequest = logging)
 
@@ -147,13 +143,11 @@ module Request =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ScheduleItem =
 
-    let logger = log4net.LogManager.GetLogger(typeof<ScheduleItem>)
-
     let private mapToHour n = 
         let hour = n / 100
         let minute = n % 100
         if minute < 0 || minute >= 60 then 
-            logger.Info <| sprintf "Could not create (minute, hour) from %d" n
+            printfn "Could not create (minute, hour) from %d" n
             None
         else
             Some (hour, minute)
@@ -204,8 +198,6 @@ module ScheduleItem =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Resident = 
 
-    let logger = log4net.LogManager.GetLogger(typeof<Resident>)
-
     let tryCreate (name : string) id : Resident option=
         try
             let names = name.Split ','
@@ -218,9 +210,9 @@ module Resident =
             |> Some
         with
             | exn -> 
-                logger.Info <| sprintf "Could not build resident from (name : %A, id :%A)"
-                                       name 
-                                       id
+                printfn "Could not build resident from (name : %A, id :%A)"
+                        name 
+                        id
                 None
 
     let toJson (resident : Resident) = 
@@ -250,8 +242,6 @@ module Resident =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Timesheet =
 
-    let logger = log4net.LogManager.GetLogger(typeof<Timesheet>)
-
     let tryMapAmionResponseToCsv (headerLines : int) (rawAmionResp : string) = 
         let csvHeader = "\"Staff name\",\"Staff name - unique ID\",\"Staff name - backup ID\",\"Assignment name (in quotes)\",\"Assignment name (in quotes) - unique ID\",\"Assignment name (in quotes) - backup ID\",\"Date of assignment\",\"Time of assignment Start\",\"Time of assignment End\""
         try 
@@ -270,9 +260,9 @@ module Timesheet =
             |> Some
         with
             exn -> 
-                logger.Warn <| sprintf "Could not map amion string to csv with error: %s [stack trace: %s]" 
-                                       exn.Message
-                                       exn.StackTrace
+                printfn "Could not map amion string to csv with error: %s [stack trace: %s]" 
+                        exn.Message
+                        exn.StackTrace
                 None
 
     let toResidents (timesheet : Timesheet) = 

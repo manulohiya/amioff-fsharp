@@ -3,7 +3,6 @@ source https://nuget.org/api/v2
 nuget FSharp.Core
 nuget FSharp.Data
 nuget FSharp.Formatting
-nuget log4net
 nuget NUnit ~> 2
 nuget NUnit.Runners ~> 2
 nuget FAKE
