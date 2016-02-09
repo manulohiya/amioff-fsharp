@@ -224,13 +224,22 @@ UCSF EM R4">UCSF EM R4</option>
   	<div class="results">
   	 	  
         	
-  		<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= freeUntil %> on <%= date %>  </li>
+  	<li style="color:green;"> <%= firstName %>  <%= lastName %>, free until <%= freeUntil %> on <%= date %> <%= grouping %>  </li>
         	
 
      </div>       
   </script>
 
+<!-- underscore template -->
+  <script type="text/template" id="resultsOff-template">  
+  	<div class="results">
+  	 	  
+        	
+  	<li> <%= firstName %>  <%= lastName %>, free until <%= freeUntil %> on <%= date %> <%= grouping %>  </li>
+        	
 
+     </div>       
+  </script>
 
 			
         	

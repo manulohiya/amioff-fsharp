@@ -6,6 +6,9 @@ $(function(){
 var $resultsOn = $('#results-on');
 var _resultsOn = _.template($('#resultsOn-template').html());
 
+var $resultsOff = $('#results-off');
+var _resultsOff = _.template($('#resultsOff-template').html());
+
 // On page load, set up date and time pickers
 $("#datepicker" ).datepicker({ 
 	minDate: 0, 
@@ -109,11 +112,27 @@ $("#program-search").submit(function(event) {
             	console.log("grouping: "+grouping);
             	var staffType = resident.staffObject.staffType;
             	var residentObject = {firstName : firstName, lastName : lastName, date : date, freeUntil : freeUntil, staffType: staffType, grouping: grouping}
-            	console.log("Resident Object: ",residentObject)
-
             	
-            	$resultsOn.append(residentObject);
+            	// Render residents who are on shift
+            	
+	            	
+	            console.log("Resident Object: ",residentObject)  
+	            if (grouping !== "Vacation") {
+	            	console.log("On Shift!")
+	            	var $resident = $(_resultsOn(residentObject));
+	            	$resident.attr('data-index', index);
+	            	$('#heading-on').show();           
+	            	$resultsOn.append($resident);
+	            }
+	            else {
+	            	console.log("On vacation!")
+	            	var $resident = $(_resultsOff(residentObject));
+	            	$resident.attr('data-index', index);
+	            	$('#heading-off').show();           
+	            	$resultsOff.append($resident);
+	            	}
 
+	            
             });
         },
         error: function() {
