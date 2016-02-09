@@ -2,7 +2,6 @@ $(function(){
 
 	console.log("JS is ready!")
 
-
 // results templates
 var $resultsOn = $('#results-on');
 var _resultsOn = _.template($('#resultsOn-template').html());
@@ -10,13 +9,7 @@ var _resultsOn = _.template($('#resultsOn-template').html());
 var $resultsOff = $('#results-off');
 var _resultsOff = _.template($('#resultsOff-template').html());
 
-
-var $heading = $('#heading');
-var _heading = _.template($('#heading-template').html());
-
-
-
-// On page load
+// On page load, set up date and time pickers
 $("#datepicker" ).datepicker({ 
 	minDate: 0, 
 	maxDate: 30 
@@ -28,64 +21,55 @@ $('#timepicker').timepicker({
 
 });
 
-$('#heading-on').hide();
-$('#heading-off').hide();
+	// Hide headings under results 
+	$('#heading-on').hide();
+	$('#heading-off').hide();
 
   // Retrieve the users program-name
   var name = localStorage.getItem('program-name');
   console.log("program-name: ", name)
   if (name != "undefined" || name != "null") {
-    $("#program-name").val(name);
+  	$("#program-name").val(name);
   } else {
 
-    $("#program-name").val("e.g. UCSFEMx`");
+  	$("#program-name").val("e.g. UCSFEM");
   }
 
+  // Function to check if element is present in an array
+  function isInArray(value, array) {
+  	return array.indexOf(value) > -1;
+  }
 
-	function isInArray(value, array) {
-  		return array.indexOf(value) > -1;
-	}
+  // Function to convert date from string to numerical values
+  var dateChecker = function(date) {
+  	console.log("dateChecker function is working")
+  	var newDate = date;
+  	var myRe = /.+?(?=\/)/;
+  	var myArray = myRe.exec(date);
+  	var myRe2 = /.{4}$/;
+  	var myArray2 = myRe2.exec(date);
+  	var month = parseInt(myArray);
+  	var year = parseInt(myArray2);
 
-var dateChecker = function(date) {
-	console.log("dateChecker function is working")
-	var newDate = date;
-	var myRe = /.+?(?=\/)/;
-	var myArray = myRe.exec(date);
-	var myRe2 = /.{4}$/;
-	var myArray2 = myRe2.exec(date);
-	var month = parseInt(myArray);
-	var year = parseInt(myArray2);
-	
-
-	if (month <= 6) {
-		console.log("Month is between 1 and 6");	
-		year = year - 1;
-		yearstr = year.toString()
-		console.log("Year (after) " + yearstr);
-		var removeYear = date.slice(0, - 4);
-		newDate = removeYear + yearstr;				
-	}
-	return newDate
-};
-
-// var date = new Date(unixTimestamp*1000);
- 
-// console.log("UnixTime now: "+timeInMs)
-// console.log("Time now: "+date)
+  	// Convert calendar year to academic year
+  	if (month <= 6) {
+  		console.log("Month is between 1 and 6");	
+  		year = year - 1;
+  		yearstr = year.toString()
+  		console.log("Year (after) " + yearstr);
+  		var removeYear = date.slice(0, - 4);
+  		newDate = removeYear + yearstr;				
+  	}
+  	return newDate
+  };
 
 
 // On submit button
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
-	$heading.empty();
-	
-	$resultsOn.empty();
-	$resultsOff.empty();
 	event.preventDefault();
-	
-	
 
-
+// Get values from form
 	var $programName = $('#program-name').val();
 	var $calendarDate = $('#datepicker').val();
 	var $date = dateChecker($calendarDate);
@@ -93,17 +77,13 @@ $("#program-search").submit(function(event) {
 	var $timeZone = $('#timeZone :selected').text();
 	var dateTimeZone = $date+" "+$time+" "+$timeZone;
 
+// Create time object 
 	var timeObject = {time : $time, calendarDate : $calendarDate, timeZone : $timeZone, programName: $programName }
-	var $inputTime = $(_heading(timeObject));
-	 // $inputTime.attr('data-index', index);
-	 $heading.append($inputTime);
-	
-	// var value = $('#dropDownId:selected').text()
-	// var currentTime = $('#date').val();
+
 	
 	console.log("Program Name: "+$programName)
 	console.log("Date with timezone: "+dateTimeZone)
-
+// Save program name in local storage
 	localStorage.setItem("program-name", $programName);
 	var storedValue = localStorage.getItem("program-name");
 	console.log(storedValue);
@@ -112,51 +92,73 @@ $("#program-search").submit(function(event) {
 	var unixtime = Date.parse(dateTimeZone).getTime()/1000; 
 
 	console.log("Unix-timezone being sent to server: "+unixtime)
-	
-	
-	
+
+// Send GET request to API
+	$.ajax({
+        // url: "https://amioff.work/api/hang?programName=$programName%20time:unixtime",
+        url: "/api/hang?programName="+$programName+"&"+"time="+unixtime,
+        type: "GET",
+        success: function(data) {
+        	console.log(data)
+
+            // Find list of students who are free
+            _.each(data.staff, function (resident, index) {
+            	console.log("Resident", resident)
+            	var firstName = resident.staffObject.firstName;
+            	var lastName = resident.staffObject.lastName;
+            	var date = moment.unix(resident.freeUntil).format("M/D  (ddd)")
+            	var freeUntil = moment.unix(resident.freeUntil).format("ha")
+            	var grouping = resident.grouping;
+            	console.log("grouping: "+grouping);
+            	var staffType = resident.staffObject.staffType;
+            	var residentObject = {firstName : firstName, lastName : lastName, date : date, freeUntil : freeUntil, staffType: staffType, grouping: grouping}
+            	
+            	// Render residents who are on shift
+            	
+	            	
+	            console.log("Resident Object: ",residentObject)  
+	            if (grouping !== "Vacation") {
+	            	console.log("On Shift!")
+	            	var $resident = $(_resultsOn(residentObject));
+	            	$resident.attr('data-index', index);
+	            	$('#heading-on').show();           
+	            	$resultsOn.append($resident);
+	            }
+	            else {
+	            	console.log("On vacation!")
+	            	var $resident = $(_resultsOff(residentObject));
+	            	$resident.attr('data-index', index);
+	            	$('#heading-off').show();           
+	            	$resultsOff.append($resident);
+	            	}
+
+	            
+            });
+        },
+        error: function() {
+        	alert("Error!");
+        }
+    });
+
+	$.ajax({
+        // url: "https://amioff.work/api/swap?programName=$programName%20time:unixtime",
+        url: "/api/swap?programName=$programName"+"&"+"startTime="+unixtime+"&"+"endTime="+(unixtime+1000)+"&"+"staffType="+"UCSF EM R2",
+        type: "GET",
+        success: function(data) {
+            // console.log(data);
 
 
-	
 
-	$.get('/api/'+$programName+'/'+unixtime,
-	  	function(data) {
-
-	  		// var names = [
-	  		// {firstName: "Manu", lastName: "Lohiya"},
-	  		// {firstName: "Neil", lastName: "Maheshwari"}
-
-	  		// ];
-	  		
-	  		console.log("Sample data being returned by server[0]: " , data[0])	
-
-	  		var endOfMonth = [1454284800, 1456790400, 1459382400, 1462060800, 1464739200, 1467331200];
-	  		
-	  		_.each(data, function (name, index) {
-	  			var date = moment.unix(name.timeFreeUntil).format("M/D  (ddd)")
-	  			var time = moment.unix(name.timeFreeUntil).format("h a")
-	  			
+        },
+        error: function() {
+        	alert("Error!");
+        }
+    });
 
 
-	  			var offScheduleFlag = isInArray(name.timeFreeUntil, endOfMonth);
-	  			
-	  			
-	  			var nameObject = {firstName : name.firstName, lastName : name.lastName, date : date, time : time, offScheduleFlag: offScheduleFlag}
-	  			var $name1 = $(_resultsOn(nameObject));
-	  			$name1.attr('data-index', index);
-	  			var $name2 = $(_resultsOff(nameObject));
-	  			$name2.attr('data-index', index);
-	  			
-	  			$('#heading-on').show();
 
-	  			$resultsOn.append($name1);
-	  			$('#heading-off').show();
-	  			$resultsOff.append($name2);
-	  		});
-	  		
-	
-		}	
-	);
+
+
 
 });
 
