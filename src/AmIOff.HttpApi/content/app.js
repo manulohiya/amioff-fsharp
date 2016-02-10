@@ -21,9 +21,10 @@ $('#timepicker').timepicker({
 
 });
 
-	// Hide headings under results 
-	$('#heading-on').hide();
-	$('#heading-off').hide();
+  // Hide headings under results 
+  $('#heading-on').hide();
+  $('#heading-off').hide(); 
+	
 
   // Retrieve the users program-name
   var name = localStorage.getItem('program-name');
@@ -68,7 +69,11 @@ $('#timepicker').timepicker({
 $("#program-search").submit(function(event) {
 	console.log("Submit button is working")
 	event.preventDefault();
-
+  $resultsOn.empty();
+  $resultsOff.empty();
+  // Hide headings under results 
+  $('#heading-on').hide();
+  $('#heading-off').hide();
 // Get values from form
 	var $programName = $('#program-name').val();
 	var $calendarDate = $('#datepicker').val();
@@ -76,6 +81,8 @@ $("#program-search").submit(function(event) {
 	var $time = $('#timepicker').val();
 	var $timeZone = $('#timeZone :selected').text();
 	var dateTimeZone = $date+" "+$time+" "+$timeZone;
+  var $staffType = $('#staffType :selected').text();
+  console.log("Typeof:", typeof($staffType))
 
 // Create time object 
 	var timeObject = {time : $time, calendarDate : $calendarDate, timeZone : $timeZone, programName: $programName }
@@ -115,24 +122,52 @@ $("#program-search").submit(function(event) {
             	
             	// Render residents who are on shift
             	
-	            	
-	            console.log("Resident Object: ",residentObject)  
-	            if (grouping !== "Vacation") {
-	            	console.log("On Shift!")
-	            	var $resident = $(_resultsOn(residentObject));
-	            	$resident.attr('data-index', index);
-	            	$('#heading-on').show();           
-	            	$resultsOn.append($resident);
-	            }
-	            else {
-	            	console.log("On vacation!")
-	            	var $resident = $(_resultsOff(residentObject));
-	            	$resident.attr('data-index', index);
-	            	$('#heading-off').show();           
-	            	$resultsOff.append($resident);
-	            	}
+	            console.log("Staff type from API", typeof(staffType))	
+	            console.log("Resident Object: ",residentObject)
+              console.log("Staff Type Input", typeof($staffType))
+              if ($staffType.toLowerCase() === 'all') {
+                  console.log("All Staff ok!") 
+                  if (grouping !== "Vacation") {
+    	            	console.log("On Shift!")
+    	            	var $resident = $(_resultsOn(residentObject));
+    	            	$resident.attr('data-index', index);
+    	            	$('#heading-on').show();           
+    	            	$resultsOn.append($resident);
+    	            }
+              
+                  else {
+                    console.log("On vacation!")
+                    var $resident = $(_resultsOff(residentObject));
+                    $resident.attr('data-index', index);
+                    $('#heading-off').show();           
+                    $resultsOff.append($resident);
+                    }
+              }
 
-	            
+              else if ($staffType === staffType) {
+                  console.log("Staffing matches!") 
+                  if (grouping !== "Vacation") {
+                    console.log("On Shift!")
+                    var $resident = $(_resultsOn(residentObject));
+                    $resident.attr('data-index', index);
+                    $('#heading-on').show();           
+                    $resultsOn.append($resident);
+                  }
+                  else {
+                    console.log("On vacation!")
+                    var $resident = $(_resultsOff(residentObject));
+                    $resident.attr('data-index', index);
+                    $('#heading-off').show();           
+                    $resultsOff.append($resident);
+                    }
+                }
+              
+    	            
+                   
+	            else {
+                console.log($staffType + " does not match " + staffType)
+                console.log(typeof($staffType) + " does not match " + typeof(staffType))
+              }
             });
         },
         error: function() {
@@ -177,4 +212,3 @@ $("#program-search").submit(function(event) {
 
 
 
-// "Chang, Julia",2529,922,"UCSF-EM 3p-11p (Blue)",429,124,12-1-15,1500,2300
